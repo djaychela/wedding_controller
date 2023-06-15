@@ -1,0 +1,99 @@
+Databases:
+
+Songs:
+
+ID
+Spotify ID
+Artist
+Title
+Voters (many/many)
+
+
+Users
+ID
+Name
+
+ledFX:
+
+
+State:
+Currently playing song
+    song name
+    song Artist
+    song spotify_id
+Ledfx status for current song - random or programmed
+Current ledFX status (complete json):
+    name = Column(String, index=True)
+    type = Column(String, index=True)
+    config = Column(JSON)
+People on dancefloor
+    list of IDs
+
+
+
+
+
+API:
+
+ledFX:
+POST - Virtual settings
+wled:
+POST - DMX Wristband Settings?
+POST - DMX Hired Lights Settings (or ledFX?)
+POST - DMX PAR Can Settings (or ledFX?)
+
+Status / Logic:
+/song/current/
+GET - Currently Playing Song (text format)
+/song/current_web/
+GET - Currently Playing Song (Web)
+/song/set
+POST - Currently Playing Song (from Mixxx)
+/status
+GET - Current Overall Status
+/dancefloor/entry
+POST - Dancefloor Entry - RETURNS name of dancer
+/dancefloor/exit
+POST - Dancefloor Exit - RETURNS name of dancer
+/ledfx/selector
+GET - ledFX Selection (Algo / Colours) (Web Page)
+
+{"effect": {"config": {"modulation_speed": 0.87, "gradient_roll": 0.0, "background_color": "#000000", "speed": 4.9, "brightness": 1.0, "background_brightness": 1.0, "modulate": true, "gradient": "#ff0101", "mirror": false, "flip": false, "blur": 0.0, "modulation_effect": "sine"}, "name": "Gradient", "type": "gradient"}}
+
+{"modulation_speed": 0.87, "gradient_roll": 0.0, "background_color": "#000000", "speed": 4.9, "brightness": 1.0, "background_brightness": 1.0, "modulate": true, "gradient": "#ff0101", "mirror": false, "flip": false, "blur": 0.0, "modulation_effect": "sine"}
+
+TODO:
+
+for currently playing song, list of associated Users' colours
+
+Dancefloor:
+in / out API endpoints
+poeple currently on the dancefloor
+removal after x songs?
+palette from those on dancefloor?
+
+DB:
+each entry is a user ID.
+
+lookup method to return colours, from list of IDS.
+
+Network Setup:
+
+Router: 192.168.1.1
+
+Sticks:
+192.168.1.11 - 192.168.1.23 (Wled-Stick-1 to Wled-Stick-12)
+
+Wled-DMX:
+192.168.1.31 - DMX   (WLED-DMX-1)
+192.168.1.32 - DMX   (WLED-DMX-2)
+192.168.1.33 - Bands (WLED-DMX-BANDS)
+
+Entry and Exit:
+192.168.1.41 - Entry Scanner
+192.168.1.42 - Exit Scanner
+192.168.1.43 - Allocation System
+
+
+
+
