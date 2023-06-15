@@ -1,6 +1,10 @@
 from fastapi import APIRouter, Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
+import asyncio
+
+import time
+
 from ..crud import crud
 
 from ..crud import dancefloor
@@ -8,6 +12,7 @@ from ..crud import dancefloor
 from .. import models, schemas
 from ..database import SessionLocal, engine
 from ..dependencies import get_db, led_fx_post, convert_to_rgb_int
+from ..api_calls import api_blocking_call
 
 
 router = APIRouter(prefix="/dancefloor",)
@@ -72,6 +77,8 @@ def dancefloor_entry(dancer: schemas.DancefloorEntry, db: Session = Depends(get_
     
 @router.post("/exit")
 def dancefloor_exit(dancer: schemas.DancefloorEntry, db: Session = Depends(get_db)):
+    # test of time-blocking API call
+    api_blocking_call()
     valid, present = dancefloor.remove_dancer(dancer, db)
     if present:
         return {"colour": valid.colour}, {"status": 2}

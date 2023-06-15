@@ -92,7 +92,12 @@ Wled-DMX:
 Entry and Exit:
 192.168.1.41 - Entry Scanner
 192.168.1.42 - Exit Scanner
-192.168.1.43 - Allocation System
+192.168.1.43 - Allocation System [nope]
+
+Computers:
+192.168.1.50 - Wedding Controller (Pi400)
+192.168.1.51 - LEDFX PC
+192.168.1.52 - Music Laptop
 
 
 
