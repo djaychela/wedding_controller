@@ -9,8 +9,12 @@ def get_user_by_nfc_id(db:Session, nfc_id: str):
 def get_all_dancers(db: Session):
     return db.query(models.Dancefloor).all()
 
-def get_dancefloor_colours(db: Session):
-    return db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).all()
+def get_dancefloor_colours(db: Session, list_mode=False):
+    if not list_mode:
+        return db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).all()
+    else:
+        return [colour[0] for colour in db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).all()]
+
 
 def increase_dancefloor_songs(db: Session):
     dancers = db.query(models.Dancefloor).all()

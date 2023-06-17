@@ -7,21 +7,21 @@ from ..crud import dancefloor
 from .. import models, schemas
 from ..database import SessionLocal, engine
 from ..dependencies import get_db, led_fx_post
-from ..state import get_state, update_ledfx_state
+from ..crud import state #import get_state, update_ledfx_state
 
 router = APIRouter(prefix="/state",)
 
 @router.get("/", response_model=schemas.StateBase)
 def read_state(db: Session = Depends(get_db)):
-    state = get_state(db)
-    return state
+    current_state = state.get_state(db)
+    return current_state
 
 @router.post("/set_current_song", response_model=schemas.StateBase)
-def store_current_song(state: schemas.StateSetSong, db: Session = Depends(get_db)):
-    current_state = get_state(db)
-    current_state.current_song_id = state.current_song_id
-    current_state.current_song_title = state.current_song_title
-    current_state.current_song_artist = state.current_song_artist
+def store_current_song(new_state: schemas.StateSetSong, db: Session = Depends(get_db)):
+    current_state = state.get_state(db)
+    current_state.current_song_id = new_state.current_song_id
+    current_state.current_song_title = new_state.current_song_title
+    current_state.current_song_artist = new_state.current_song_artist
     db.commit()
     dancefloor.increase_dancefloor_songs(db=db)
     # TODO: trigger new effect generation here.
