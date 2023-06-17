@@ -11,9 +11,15 @@ def get_all_dancers(db: Session):
 
 def get_dancefloor_colours(db: Session, list_mode=False):
     if not list_mode:
-        return db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).all()
+        return db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).order_by(models.Dancefloor.id.desc()).limit(3).all()
     else:
-        return [colour[0] for colour in db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).all()]
+        return [colour[0] for colour in db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).order_by(models.Dancefloor.id.desc()).limit(3).all()]
+
+def get_last_dancer(db: Session, list_mode=False):
+    if not list_mode:
+        return db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).order_by(models.Dancefloor.id.desc()).limit(1).first()
+    else:
+        return [colour[0] for colour in db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).order_by(models.Dancefloor.id.desc()).limit(1).first()]
 
 
 def increase_dancefloor_songs(db: Session):

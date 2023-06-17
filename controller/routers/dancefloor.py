@@ -10,10 +10,10 @@ from ..crud import crud
 from ..crud import dancefloor
 
 from .. import models, schemas
+from .. import api_calls
+
 from ..database import SessionLocal, engine
 from ..dependencies import get_db, led_fx_post, convert_to_rgb_int
-from ..api_calls import api_blocking_call, ledfx_random_api_call, dancefloor_entry_exit, change_ledfx_type
-
 
 router = APIRouter(prefix="/dancefloor",)
 
@@ -69,7 +69,8 @@ def dancefloor_entry(dancer: schemas.DancefloorEntry, db: Session = Depends(get_
     if valid:
         # dancer["present"] = 1
         # change_ledfx_type(db=db)
-        dancefloor_entry_exit(db=db)
+        api_calls.dancefloor_entry_exit(db=db)
+        # api_calls.change_ledfx_type(db=db)
         dancer = dancefloor.get_user_by_nfc_id(db, dancer.dancer_nfc_id)
         return dancer, {"status": 0}
     elif present:
@@ -85,7 +86,7 @@ def dancefloor_exit(dancer: schemas.DancefloorEntry, db: Session = Depends(get_d
 
     valid, present = dancefloor.remove_dancer(dancer, db)
     if present:
-        dancefloor_entry_exit(db=db)
+        api_calls.dancefloor_entry_exit(db=db)
         return {"colour": valid.colour}, {"status": 2}
     else:
         return {"None": "None"}, {"status": 3}

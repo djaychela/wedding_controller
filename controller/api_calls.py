@@ -4,7 +4,7 @@
 
 
 """
-Bands calls are to last for ~20 seconds, then go to pattern to match dancefloor and current palette
+Bands calls are to last for ~10 seconds, then go to pattern to match dancefloor and current palette
 virtual-1 calls to start straight away
 virtual-dmx calls to start straight away
 
@@ -19,21 +19,20 @@ complementary patterns needed for bands and stick in particular
 """
 
 import time
-
-import pprint
-
 import random
-
 import requests
-
 import json
 
 from concurrent.futures import ThreadPoolExecutor
 
 from .models import EffectPreset
 from .crud import state, dancefloor
-from .dependencies import create_gradient
-from .api_helpers import update_state_from_response, create_api_request_string
+from .dependencies import create_gradient, adjacent_colours, convert_to_rgb_int, convert_int_to_hex
+from .api_helpers import (
+    update_state_from_response,
+    create_api_request_string,
+    perform_api_call,
+)
 
 API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
 
@@ -65,90 +64,58 @@ effects_list = [
 
 def ledfx_random_api_call(db):
     # Should update state to reflect current status once random selected
-    current_gradient = random.choice(gradient_list)
-    current_effect = random.choice(effects_list)
+    random_gradient = random.choice(gradient_list)
+    random_effect = random.choice(effects_list)
 
-    print(f"Effect Chosen: {current_effect}")
-    print(f"Gradient Chosen: {current_gradient}")
-    # get gradient from dancefloor
-    dancefloor_colours = dancefloor.get_dancefloor_colours(db, list_mode=True)
-    dancefloor_gradient = create_gradient(dancefloor_colours)
-    print(dancefloor_gradient)
-
-    data = create_api_request_string(current_effect, dancefloor_gradient)
-
-    # data = {
-    #     "active": True,
-    #     "type": str(current_effect),
-    #     "config": {
-    #         "blur": 0.0,
-    #         "gradient": dancefloor_gradient,
-    #         "band_count" : 10
-    #     }
-    # }
-
-    data_dump = json.dumps(data)
-
-    # sending post request and saving response as response object
-    r = requests.post(url=API_ENDPOINT, data=data_dump)
-
-    if r:
-        update_state_from_response(db, r)
+    data = create_api_request_string(random_effect, random_gradient)
+    perform_api_call(db, data, "sticks")
 
 
 def dancefloor_entry_exit(db):
     current_state = state.get_state(db)
     current_type = current_state.ledfx_type
+    dancefloor_gradient = create_gradient(
+        dancefloor.get_dancefloor_colours(db, list_mode=True)
+    )
 
-    dancefloor_colours = dancefloor.get_dancefloor_colours(db, list_mode=True)
-    dancefloor_gradient = create_gradient(dancefloor_colours)
+    # TODO: this is where the experimental gradients happen
+    # adj_gradient is adjacents, based on the last dancer
+    # mono_gradient is just the last dancer and (0,0,0) 0%
 
-    data = create_api_request_string(current_type, dancefloor_gradient)
+    last_dancer = dancefloor.get_last_dancer(db)
+    adj = adjacent_colours(convert_to_rgb_int(last_dancer[0]))
+    adj_gradient = create_gradient(adj)
+    mono_gradient = create_gradient([last_dancer[0]])
 
-    data_dump = json.dumps(data)
-
-    # sending post request and saving response as response object
-    r = requests.post(url=API_ENDPOINT, data=data_dump)
-    if r:
-        update_state_from_response(db, r)
+    data = create_api_request_string(current_type, adj_gradient)
+    perform_api_call(db, data, "sticks")
 
 
 def change_ledfx_type(db):
     current_state = state.get_state(db)
     current_config = current_state.ledfx_config
-    current_name = current_config["name"]
-    current_type = current_config["type"]
     current_gradient = current_config["config"]["gradient"]
+    # TODO: this should check if the song has a user vote?
     random_effect = random.choice(effects_list)
-    print(f"{current_name=}")
-    print(f"{current_type=}")
-    print(f"{current_gradient=}")
-    # dancefloor_colours = dancefloor.get_dancefloor_colours(db, list_mode=True)
-    # dancefloor_gradient = create_gradient(dancefloor_colours)
 
-    data = {
-        "active": True,
-        "type": str(random_effect),
-        "config": {"blur": 0.0, "gradient": current_gradient, "band_count": 10},
-    }
-
-    data_dump = json.dumps(data)
-
-    # sending post request and saving response as response object
-    r = requests.post(url=API_ENDPOINT, data=data_dump)
-    if r:
-        update_state_from_response(db, r)
-
+    data = create_api_request_string(random_effect, current_gradient)
+    perform_api_call(db, data, "sticks")
 
 def flash_bands():
+    # look up user who voted for song
+    # set api to flash on this colour
     pass
 
 
 def bands_current_song():
+    # get current colour palette
+    # set bands to whatever fx in that colour
     pass
 
 
 def sticks_current_song():
+    # check if song has an effect set for it
+    #
     pass
 
 
