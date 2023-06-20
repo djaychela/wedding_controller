@@ -59,6 +59,16 @@ class Gradient(GradientBase):
 class GradientCreate(GradientBase):
     gradient: str
 
+
+class EffectBase(BaseModel):
+    name: str
+    type: str
+    colour_type: str
+    max_colours: int
+
+    class Config:
+        orm_mode = True
+
 class EffectPresetBase(BaseModel):
     name: str
     type: str
@@ -71,6 +81,7 @@ class EffectPresetCreate(EffectPresetBase):
     name: str
     type: str
     config: Json
+    
                      
     class Config:
         orm_mode = True

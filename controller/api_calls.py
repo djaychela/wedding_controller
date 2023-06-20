@@ -26,7 +26,7 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 
 from .models import EffectPreset
-from .crud import state, dancefloor
+from .crud import state, dancefloor, effects
 from .dependencies import create_gradient, adjacent_colours, convert_to_rgb_int, convert_int_to_hex
 from .api_helpers import (
     update_state_from_response,
@@ -96,6 +96,32 @@ def change_ledfx_type(db):
     current_config = current_state.ledfx_config
     current_gradient = current_config["config"]["gradient"]
     # TODO: this should check if the song has a user vote?
+    # select a random effect from effects in db
+    new_effect = effects.get_random_effect()
+    print(new_effect.colour_type)
+    # create suitable gradient for chosen effect (single, adjacent, gradient)
+    # if single, choose song voter
+    # if adjancent, use song voter as adjacent basis
+    # if gradient, find number and create gradient from voter and df present
+
+    random_effect = random.choice(effects_list)
+
+    data = create_api_request_string(random_effect, current_gradient)
+    perform_api_call(db, data, "sticks")
+
+def api_for_new_song(db):
+    current_state = state.get_state(db)
+    current_config = current_state.ledfx_config
+    current_gradient = current_config["config"]["gradient"]
+    # TODO: this should check if the song has a user vote?
+    # select a random effect from effects in db
+    new_effect = effects.get_random_effect()
+    print(new_effect.colour_type)
+    # create suitable gradient for chosen effect (single, adjacent, gradient)
+    # if single, choose song voter
+    # if adjancent, use song voter as adjacent basis
+    # if gradient, find number and create gradient from voter and df present
+
     random_effect = random.choice(effects_list)
 
     data = create_api_request_string(random_effect, current_gradient)

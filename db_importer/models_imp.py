@@ -56,6 +56,8 @@ class Effect(CtrlBase):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     name = Column(String, index=True)
     type = Column(String, index=True)
+    colour_type = Column(String, index=True)
+    max_colours = Column(Integer)
 
 
 class DbVotes(DbBase):

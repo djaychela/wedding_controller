@@ -1,13 +1,10 @@
 from fastapi import APIRouter, Depends, FastAPI, HTTPException
 from sqlalchemy.orm import Session
 
-from ..crud import crud
-from ..crud import dancefloor
-
 from .. import models, schemas
 from ..database import SessionLocal, engine
 from ..dependencies import get_db, led_fx_post
-from ..crud import state #import get_state, update_ledfx_state
+from ..crud import state, dancefloor #import get_state, update_ledfx_state
 
 router = APIRouter(prefix="/state",)
 
