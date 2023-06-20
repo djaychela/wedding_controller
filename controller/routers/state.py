@@ -28,6 +28,7 @@ def store_current_song(new_state: schemas.StateSetSong, db: Session = Depends(ge
     # Wrist bands should flash colour of song owner, if there is one
     # New Effect selected for song - random or programmed
     # Colour Palette Selected on Song owner and those on dancefloor
+    # Colour Pallete for song is at crud.songs.get_song_colours (mode="list")
     # db_effect = crud.get_random_effect(db=db)
     # update_ledfx_state(db, db_effect)
     return current_state

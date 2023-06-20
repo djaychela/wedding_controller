@@ -77,6 +77,13 @@ each entry is a user ID.
 
 lookup method to return colours, from list of IDS.
 
+Effect Table:
+name
+type
+colour type [single, adjacent, gradient]
+max_colours
+
+
 Network Setup:
 
 Router: 192.168.1.1
