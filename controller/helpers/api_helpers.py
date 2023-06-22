@@ -1,9 +1,9 @@
 import json
 import requests
 
-from .crud import state
+from ..crud import state
 
-from .models import EffectPreset
+from ..models import EffectPreset
 
 STICKS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
 BANDS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-bands/effects"

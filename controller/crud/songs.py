@@ -3,6 +3,8 @@ from sqlalchemy.sql import func
 
 from .. import models, schemas
 
+from ..helpers import colour_helpers
+
 def get_songs(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Song).offset(skip).limit(limit).all()
 
@@ -23,7 +25,8 @@ def get_song_colours(song_id: str, db: Session, mode="dict"):
         else:
             return [v for k,v in colours.items()]
     else:
-        return None
+        # TODO: return a random single colour here
+        return [colour_helpers.generate_random_hex_colour()]
 
 
 

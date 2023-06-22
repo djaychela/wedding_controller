@@ -26,13 +26,14 @@ import json
 from concurrent.futures import ThreadPoolExecutor
 
 from .models import EffectPreset
-from .crud import state, dancefloor, effects
+from .crud import state, dancefloor, effects, songs
 from .dependencies import create_gradient, adjacent_colours, convert_to_rgb_int, convert_int_to_hex
-from .api_helpers import (
+from .helpers.api_helpers import (
     update_state_from_response,
     create_api_request_string,
     perform_api_call,
 )
+from .helpers import colour_helpers
 
 API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
 
@@ -109,23 +110,47 @@ def change_ledfx_type(db):
     data = create_api_request_string(random_effect, current_gradient)
     perform_api_call(db, data, "sticks")
 
-def api_for_new_song(db):
-    current_state = state.get_state(db)
-    current_config = current_state.ledfx_config
-    current_gradient = current_config["config"]["gradient"]
-    # TODO: this should check if the song has a user vote?
-    # select a random effect from effects in db
-    new_effect = effects.get_random_effect()
-    print(new_effect.colour_type)
-    # create suitable gradient for chosen effect (single, adjacent, gradient)
-    # if single, choose song voter
-    # if adjancent, use song voter as adjacent basis
-    # if gradient, find number and create gradient from voter and df present
+def api_for_new_song(db, song_id=None):
+    dancefloor.increase_dancefloor_songs(db=db)
+    # look up to see if preset exists for song.
+    preset_effect = effects.get_effect_preset_by_song_id(db, song_id)
+    if preset_effect:
+        # preset present, send this!
+        print(f"Preset Found for {song_id}")
+        print(f"sending API call for {preset_effect.config['effect']=}")
+        output_effect = preset_effect.config['effect']
+    else:
+        # Song does not have a preset, create random effect with voter colours
+        random_effect = effects.get_random_effect(db)
+        colours = songs.get_song_colours(song_id, db, mode="list")
+        # TODO: correct colour selection?
+        # create suitable gradient for chosen effect (single, adjacent, gradient)
+        # if single, choose song voter
+        # if adjancent, use song voter as adjacent basis
+        # if gradient, find number and create gradient from voter and df present
+        print(random_effect.colour_type)
+        if random_effect.colour_type == "gradient":
+            colourscheme = create_gradient(colours)
+        elif random_effect.colour_type == "adjacent":
+            # randomly choose one colour
+            print(f"{colours=}")
+            colourscheme = colour_helpers.choose_random_colour(colours)
+            print("Adjacent:")
+            print(f"{colours=}")
+            # make gradient from adjacents
+            
+        elif random_effect.colour_type == "single":
+            colourscheme = create_gradient(colours)
+            # randomly choose one colour
+            # make gradient from single colour
+            
+        output_effect = create_api_request_string(random_effect.type, colourscheme)
+        
+    perform_api_call(db, output_effect, "sticks")
+    # TODO: perform calls for wristbands
+    # TODO: get colours from preset effect (for wristbands)
+    return output_effect
 
-    random_effect = random.choice(effects_list)
-
-    data = create_api_request_string(random_effect, current_gradient)
-    perform_api_call(db, data, "sticks")
 
 def flash_bands():
     # look up user who voted for song

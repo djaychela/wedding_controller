@@ -59,6 +59,14 @@ class Effect(CtrlBase):
     colour_type = Column(String, index=True)
     max_colours = Column(Integer)
 
+class EffectPreset(CtrlBase):
+    __tablename__ = "effect_preset_table"
+
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    song_id = Column(String, index=True)
+    name = Column(String, index=True)
+    type = Column(String, index=True)
+    config = Column(JSON)
 
 class DbVotes(DbBase):
     __tablename__ = "tracks_votestable"

@@ -43,6 +43,8 @@ def led_fx_post(db: Session, db_effect):
 
 
 def sort_colour_list(colour_list):
+    if colour_list is None:
+        return []
     if len(colour_list) == 0:
         return []
     """Takes a list of hex-format colours and sorts them in brightness order"""

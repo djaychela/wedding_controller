@@ -17,6 +17,7 @@ from models_imp import (
     State,
     Gradient,
     Effect,
+    EffectPreset,
 )
 from database_imp import db_engine, ctrl_engine
 
@@ -113,9 +114,10 @@ def create_state():
         state.current_song_id = "1234"
         state.current_song_artist = "Dummy Artist"
         state.current_song_title = "The Best Song"
-        state.ledfx_config = json.dumps(
-            '{"url": "http://127.0.0.1:8888","name": "LedFx","version": "0.3.0"}'
-        )
+        false = False
+        true = True
+        config_dict = {"effect": {"config": {"background_brightness": 1.0, "background_color": "#000000", "band_count": 10, "bass_size": 8.0, "blur": 0.0, "brightness": 1.0, "flip": false, "gradient": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(128, 255, 0) 32%, rgb(0, 255, 0) 64%, rgb(0, 255, 127) 96%)", "gradient_roll": 0.0, "high_size": 3.0, "mids_size": 6.0, "mirror": false, "speed": 1.0, "vertical_shift": 0.12, "viscosity": 6.0}, "name": "Water", "type": "water"}}
+        state.ledfx_config = config_dict
         state.ledfx_name = "LED_NAME"
         state.ledfx_type = "LED_TYPE"
         session.add(state)
@@ -195,6 +197,27 @@ def create_effects():
             session.add(current_effect)
             session.commit()
 
+def create_effect_presets():
+    true = True
+    false = False
+    dict_1 = {"effect": {"config": {"background_brightness": 1.0, "background_color": "#000000", "blur": 0.0, "brightness": 1.0, "flip": false, "gradient": "linear-gradient(90deg, #00ffff 0.00%,#0000ff 100.00%)", "gradient_roll": 0.0, "mirror": false, "reactivity": 0.5, "speed": 0.52}, "name": "Block Reflections", "type": "block_reflections"}}
+    dict_2 = {"effect": {"config": {"align": "left", "background_brightness": 1.0, "background_color": "#000000", "band_count": 10, "blur": 0.0, "brightness": 1.0, "flip": false, "gradient": "linear-gradient(90deg, #ff0000 0.00%,#ff7800 14.00%,#ffc800 28.00%,#00ff00 42.00%,#00c78c 56.00%,#0000ff 70.00%,#800080 84.00%,#ff00b2 98.00%)", "gradient_repeat": 10, "gradient_roll": 0.0, "mirror": false}, "name": "Equalizer", "type": "equalizer"}}
+    dict_3 = {"effect": {"config": {"background_brightness": 1.0, "background_color": "#000000", "band_count": 10, "bass_decay_rate": 0.05, "blur": 0.0, "brightness": 1.0, "flip": false, "gradient": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 204, 255) 98%)", "gradient_roll": 0.0, "mirror": true, "sparks_color": "#ffffff", "sparks_decay_rate": 0.15}, "name": "Power", "type": "power"}}
+    dict_4 = {"effect": {"config": {"blur": 0.0, "gradient": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(153, 204, 255) 49%, rgb(153, 51, 255) 98%)", "band_count": 10, "background_brightness": 1.0, "gradient_roll": 0.0, "mirror": false, "flip_gradient": false, "brightness": 1.0, "flip": false, "background_color": "#000000"}, "name": "Bands Matrix", "type": "bands_matrix"}}
+
+    preset_list = [dict_1, dict_2]
+    song_id = ["043bfUkTydw0xJ5JjOT91w","003vvx7Niy0yvhvHt4a68B"]
+
+    with Session(ctrl_engine) as session:
+        for idx, config in enumerate(preset_list):
+            current_preset = EffectPreset()
+            current_preset.config = config
+            current_preset.name = config["effect"]["name"]
+            current_preset.type = config["effect"]["type"]
+            current_preset.song_id = song_id[idx]
+            session.add(current_preset)
+            session.commit()
+    
 
 if __name__ == "__main__":
     # get users from db
@@ -217,3 +240,4 @@ if __name__ == "__main__":
     create_state()
     create_gradients()
     create_effects()
+    create_effect_presets()

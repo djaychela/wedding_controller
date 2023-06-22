@@ -70,6 +70,7 @@ class EffectBase(BaseModel):
         orm_mode = True
 
 class EffectPresetBase(BaseModel):
+    song_id: str
     name: str
     type: str
     config: Optional[dict]
@@ -78,6 +79,7 @@ class EffectPresetBase(BaseModel):
         orm_mode = True
 
 class EffectPresetCreate(EffectPresetBase):
+    song_id: str
     name: str
     type: str
     config: Json
