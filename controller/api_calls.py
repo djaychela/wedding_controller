@@ -80,7 +80,7 @@ def dancefloor_entry_exit(db):
     # adj_gradient is adjacents, based on the last dancer
     # mono_gradient is just the last dancer and (0,0,0) 0%
 
-    last_dancer = dancefloor.get_last_dancer(db)
+    last_dancer = dancefloor.get_last_n_dancers(db, False, 1)
     adj = colour_helpers.adjacent_colours(colour_helpers.convert_to_rgb_int(last_dancer[0]))
     adj_gradient = colour_helpers.create_gradient(adj)
     mono_gradient = colour_helpers.create_gradient([last_dancer[0]])

@@ -68,6 +68,7 @@ def create_gradient(colour_list, limit=3):
         colour_list = colour_list[:limit]
     if len(colour_list) == 0:
         colour_list = [generate_random_hex_colour()]
+        # TODO: get voter colour for current song instead of random colour
     increment = int(98 / len(colour_list))
     location = 0
     stem = "linear-gradient(90deg, rgb(0, 0, 0) 0%"

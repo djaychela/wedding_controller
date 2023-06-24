@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from .. import models, schemas
 from ..database import SessionLocal, engine
-from ..dependencies import get_db, led_fx_post, create_gradient
+from ..dependencies import get_db
 from ..crud import state, dancefloor, effects, songs #import get_state, update_ledfx_state
 from ..api_calls import api_for_new_song
 

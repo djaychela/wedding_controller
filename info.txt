@@ -114,3 +114,20 @@ idea:
 store current effect mode in state
 this would allow easy lookup for api calls to select appropriate new colours
 when entering / exiting dancefloor, and when new songs start up
+
+
+idea 2:
+
+voters stored in state (for easy access)?
+dancefloor already stored
+
+colours rationale:
+song change:
+single - pick a voter (random) and they are the colour
+adjacent - pick a voter (random), adjacent the colours
+gradient - create gradient from voters and current dancefloor (latest get chosen first).
+
+dancefloor entry:
+single - new single colour is latest to dancefloor
+adjacent - adjacent based on latest to dancefloor
+gradient - gradient based on voters and current dancefloor (latest get chosen first).
