@@ -107,10 +107,33 @@ class StateBase(BaseModel):
     ledfx_name: str
     ledfx_type: str
     ledfx_config: Optional[dict]
+    ledfx_colour_type: str
+    ledfx_max_colours: int
+    bands_name: str
+    bands_type: str
+    bands_config: Optional[dict]
+    bands_colour_type: str
+    bands_max_colours: int
 
     class Config:
         orm_mode = True
 
+class StateLedFxUpdate(BaseModel):
+
+    ledfx_name: str
+    ledfx_type: str
+    ledfx_config: Optional[dict]
+
+    class Config:
+        orm_mode = True
+
+class StateLedFxUpdateColours(BaseModel):
+
+    ledfx_colour_type: str
+    ledfx_max_colours: str
+
+    class Config:
+        orm_mode = True
 
 class StateSetSong(BaseModel):
     current_song_id: str

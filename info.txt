@@ -102,10 +102,15 @@ Entry and Exit:
 192.168.1.43 - Allocation System [nope]
 
 Computers:
-192.168.1.50 - Wedding Controller (Pi400)
+192.168.1.50 - Wedding Controller (mbp2012)
 192.168.1.51 - LEDFX PC
-192.168.1.52 - Music Laptop
+192.168.1.52 - Music Laptop (tbd)
 
 
 
 
+idea:
+
+store current effect mode in state
+this would allow easy lookup for api calls to select appropriate new colours
+when entering / exiting dancefloor, and when new songs start up

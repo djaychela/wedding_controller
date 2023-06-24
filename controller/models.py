@@ -56,6 +56,8 @@ class EffectPreset(Base):
     name = Column(String, index=True)
     type = Column(String, index=True)
     config = Column(JSON)
+    colour_type = Column(String, index=True)
+    max_colours = Column(Integer)
     
 
 class State(Base):
@@ -65,11 +67,17 @@ class State(Base):
     current_song_id = Column(String)
     current_song_title = Column(String, index=True)
     current_song_artist = Column(String, index=True)
-    # current_song_ledfx_random = Column(Boolean)
     ledfx_name = Column(String, index=True)
     ledfx_type = Column(String, index=True)
     ledfx_config = Column(JSON)
-    # dancers: Mapped[List] = mapped_column(String)
+    ledfx_colour_type = Column(String, index=True)
+    ledfx_max_colours = Column(Integer)
+    bands_name = Column(String, index=True)
+    bands_type = Column(String, index=True)
+    bands_config = Column(JSON)
+    bands_colour_type = Column(String, index=True)
+    bands_max_colours = Column(Integer)
+    
 
 class Dancefloor(Base):
     __tablename__ = "dancefloor_table"

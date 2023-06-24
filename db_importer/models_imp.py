@@ -43,6 +43,13 @@ class State(CtrlBase):
     ledfx_name = Column(String, index=True)
     ledfx_type = Column(String, index=True)
     ledfx_config = Column(JSON)
+    ledfx_colour_type = Column(String, index=True)
+    ledfx_max_colours = Column(Integer)
+    bands_name = Column(String, index=True)
+    bands_type = Column(String, index=True)
+    bands_config = Column(JSON)
+    bands_colour_type = Column(String, index=True)
+    bands_max_colours = Column(Integer)
 
 class Gradient(CtrlBase):
     __tablename__ = "gradient_table"
@@ -67,6 +74,8 @@ class EffectPreset(CtrlBase):
     name = Column(String, index=True)
     type = Column(String, index=True)
     config = Column(JSON)
+    colour_type = Column(String, index=True)
+    max_colours = Column(Integer)
 
 class DbVotes(DbBase):
     __tablename__ = "tracks_votestable"

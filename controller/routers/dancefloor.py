@@ -13,7 +13,9 @@ from .. import models, schemas
 from .. import api_calls
 
 from ..database import SessionLocal, engine
-from ..dependencies import get_db, led_fx_post, convert_to_rgb_int
+from ..dependencies import get_db, led_fx_post
+
+from ..helpers import colour_helpers
 
 router = APIRouter(prefix="/dancefloor",)
 
@@ -31,7 +33,7 @@ def list_dancers(db: Session = Depends(get_db)):
 def list_dancers_rgb(db: Session = Depends(get_db)):
     dancers = dancefloor.get_all_dancers(db)
     for dancer in dancers:
-        dancer.dancer_colour = convert_to_rgb_int(dancer.dancer_colour)
+        dancer.dancer_colour = colour_helpers.convert_to_rgb_int(dancer.dancer_colour)
     return dancers
 
 @router.get("/list_names")
@@ -44,7 +46,7 @@ def list_dancers(db: Session = Depends(get_db)):
         dancer_user = crud.get_user_by_nfc_id(db, dancer.dancer_nfc_id)
         dancers_names[dancer.id] = f"{dancer_user.first_name}"
         # dance_names_dict = {dancer[0]: f"{dancer[1].first_name} {dancer[1].last_name}" for dancer in enumerate(dancers)}
-        dancer.dancer_colour = convert_to_rgb_int(dancer.dancer_colour)
+        dancer.dancer_colour = colour_helpers.convert_to_rgb_int(dancer.dancer_colour)
     return dancers_names
 
 @router.get("/colours")
@@ -56,7 +58,7 @@ def list_colours(db: Session = Depends(get_db)):
 @router.get("/colours_rgb")
 def list_colours_rgb(db: Session = Depends(get_db)):
     colours = dancefloor.get_dancefloor_colours(db)
-    colours_dict = {colour[0]: convert_to_rgb_int(colour[1][0]) for colour in enumerate(colours)}
+    colours_dict = {colour[0]: colour_helpers.convert_to_rgb_int(colour[1][0]) for colour in enumerate(colours)}
     return colours_dict
 
 
