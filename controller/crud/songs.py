@@ -13,7 +13,7 @@ def get_song(song_id: str, db: Session):
     return db.query(models.Song).filter(models.Song.track_id == song_id).first()
 
 
-def get_song_colours(song_id: str, db: Session, mode="dict"):
+def get_song_colours(db: Session, song_id: str, mode="dict"):
     voters = db.query(models.Votes).filter(models.Votes.track_id == song_id).all()
     if voters:
         colours = {}

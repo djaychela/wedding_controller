@@ -2,6 +2,8 @@ import colorsys
 
 from random import randint, choice, shuffle
 
+from ..crud import dancefloor, state, songs
+
 def generate_random_hex_colour() -> str:
     # returns a 6-digit hex colour in the format #AABBCC
     r = hex(randint(127,255))[2:]
@@ -57,7 +59,7 @@ def sort_colour_list(colour_list):
 
     return colour_list_hex
 
-def create_gradient(colour_list, limit=3):
+def create_gradient(colour_list, limit=6):
     """takes a list of hex-format colours, and outputs
     a linear gradient for ledfx based on the colour list.
     if there are more than limit entries, only a random selection
@@ -80,25 +82,52 @@ def create_gradient(colour_list, limit=3):
     stem += ")"
     return stem
 
+def create_colourscheme(db) -> list:
+    """ Gets the current relevant colours - 
+    song voters (first, but randomised in order)
+    dancefloor members (in reverse order, newest first)
+    returns a list of #AABBCC format colours """
 
-def refine_colourscheme(colour_list: list, mode: str) -> str:
+    current_state = state.get_state(db)
+    voter_colours = songs.get_song_colours(db, current_state.current_song_id, mode="list")
+    if voter_colours == None:
+        voter_colours = []
+    shuffle(voter_colours)
+    dancefloor_colours = dancefloor.get_dancefloor_colours(db, list_mode=True)
+    # remove any duplication
+    dancefloor_colours = [colour for colour in dancefloor_colours if colour not in voter_colours]
+    current_colours = voter_colours + dancefloor_colours
+    if len(current_colours) == 0:
+        # No votes, no-one on the dancefloor, so return a single random colour
+        current_colours = [generate_random_hex_colour()]
+    return current_colours
+
+
+def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> list:
     # Takes a list of colours and a mode from an effect
     # returns an appropriately-altered gradient
-    # if single, choose song voter
-    # if adjacent, use song voter as adjacent basis
-    # if gradient, find number and create gradient from voter and df present
-    if mode == "gradient":
-        colourscheme = colour_list
-    elif mode == "adjacent":
-        # randomly choose one colour
-        # make gradient from adjacents
-        random_colour = choose_random_colour(colour_list)[0]
-        colourscheme = adjacent_colours(random_colour)
+    if colour_mode == "gradient":
+        # limit to current length in settings - same for both modes
+        current_state = state.get_state(db)
+        ledfx_max_colours = current_state.ledfx_max_colours
+        colourscheme = colour_list[:ledfx_max_colours]
+    elif colour_mode == "adjacent":
+        # song change - pick a voter (random), adjacent the colours
+        # dancefloor  - adjacent based on latest to dancefloor
+        if mode == "song":
+            colour = colour_list[0]
+        else:
+            colour = dancefloor.get_last_n_dancers(db, True, 1)[0]
+        # make colourscheme of adjacents
+        colourscheme = adjacent_colours(colour)
         
-    elif mode == "single":
-        # randomly choose one colour
-        random_colour = choose_random_colour(colour_list)[0]
-        colourscheme = [random_colour]
+    elif colour_mode == "single":
+        # song change - pick a voter (random) and they are the colour
+        # dancefloor  - new single colour is latest to dancefloor
+        if mode == "song":
+            colourscheme = [colour_list[0]]
+        else:
+            colourscheme = dancefloor.get_last_n_dancers(db, True, 1)
         
-    return create_gradient(colourscheme)
+    return colourscheme
             

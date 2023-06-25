@@ -68,25 +68,15 @@ def ledfx_random_api_call(db):
 
 
 def dancefloor_entry_exit(db):
+    colourscheme = colour_helpers.create_colourscheme(db)
     current_state = state.get_state(db)
-    current_type = current_state.ledfx_type
-    dancefloor_gradient = colour_helpers.create_gradient(
-        dancefloor.get_dancefloor_colours(db, list_mode=True)
-    )
 
-    # TODO: make this look up the current effect colour_type, and call 
-    # colour_helpers.refine_colourscheme() to get the right one.
-
-    # adj_gradient is adjacents, based on the last dancer
-    # mono_gradient is just the last dancer and (0,0,0) 0%
-
-    last_dancer = dancefloor.get_last_n_dancers(db, False, 1)
-    adj = colour_helpers.adjacent_colours(colour_helpers.convert_to_rgb_int(last_dancer[0]))
-    adj_gradient = colour_helpers.create_gradient(adj)
-    mono_gradient = colour_helpers.create_gradient([last_dancer[0]])
-
-    data = api_helpers.create_api_request_string(current_type, adj_gradient)
+    adj_colourscheme = colour_helpers.refine_colourscheme(db, colourscheme, current_state.ledfx_colour_mode, "floor")
+    gradient = colour_helpers.create_gradient(adj_colourscheme)
+    data = api_helpers.create_api_request_string(current_state.ledfx_type, gradient)
     api_helpers.perform_api_call(db, data, "sticks")
+
+    # TODO: call bands_current_song(db, timing = "instant") to update bands colours
 
 
 def change_ledfx_type(db):
@@ -99,7 +89,7 @@ def change_ledfx_type(db):
     print(new_effect.colour_type)
     # create suitable gradient for chosen effect (single, adjacent, gradient)
     # if single, choose song voter
-    # if adjancent, use song voter as adjacent basis
+    # if adjacent, use song voter as adjacent basis
     # if gradient, find number and create gradient from voter and df present
 
     random_effect = random.choice(effects_list)
@@ -111,7 +101,7 @@ def wrist_bands_new_song(db):
     # perform both calls for wrist band.  Second call has inherent delay.
     executor = ThreadPoolExecutor(max_workers=3)
     executor.submit(flash_bands(db))
-    executor.submit(bands_current_song(db))
+    executor.submit(bands_current_song(db, timing="delayed"))
 
 def api_for_new_song(db, song_id=None):
     dancefloor.increase_dancefloor_songs(db=db)
@@ -125,10 +115,11 @@ def api_for_new_song(db, song_id=None):
     else:
         # Song does not have a preset, create random effect with voter colours
         random_effect = effects.get_random_effect(db)
-        colours = songs.get_song_colours(song_id, db, mode="list")
+        colours = songs.get_song_colours(db, song_id, mode="list")
         colour_type = random_effect.colour_type
         max_colours = random_effect.max_colours        
-        colourscheme = colour_helpers.refine_colourscheme(colours, colour_type)
+        colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_type, "floor")
+        gradient = colour_helpers.create_gradient(colourscheme)
         output_effect = api_helpers.create_api_request_string(random_effect.type, colourscheme)
 
     api_helpers.update_state_colours(db, colour_type, max_colours)    
@@ -137,25 +128,23 @@ def api_for_new_song(db, song_id=None):
     # TODO: perform calls for wristbands
     return output_effect
 
-
 def flash_bands(db, song_id=None):
     # look up colours of user/s who voted for song
-    song_colours = songs.get_song_colours(song_id, db, mode="list")
+    song_colours = songs.get_song_colours(db, song_id, mode="list")
     # TODO: set api to flash on this colour/s
     data = api_helpers.create_api_request_string("flash", song_colours)
     api_helpers.perform_api_call(db, data, mode="bands")
 
-def bands_current_song(db):
-    # called at same time as flash_bands
-    # 10 second delay before api call
-    time.sleep(10)
-    # get current colour palette
-    dancefloor_colours = dancefloor.get_dancefloor_colours(db)
+def bands_current_song(db, timing = "instant"):
+    if timing == "delayed":
+        # 10 second delay before api call (when called alongside flash mode)
+        time.sleep(10)
+    # get and refine colourscheme
+    colourscheme = colour_helpers.create_colourscheme(db)
+    adj_colourscheme = colour_helpers.refine_colourscheme(db, colourscheme)
     # create data call for bands
-    data = api_helpers.create_api_request_string("bands", dancefloor_colours)
-    # set bands to whatever fx in that colour
-    # TODO: set api to bands
+    # TODO: create appropriate request string for bands effect
+    data = api_helpers.create_api_request_string("bands", adj_colourscheme)
     api_helpers.perform_api_call(db, data, mode="bands")
 
-def dmx_current_song():
-    pass
+

@@ -120,12 +120,12 @@ def create_state():
         state.ledfx_config = config_dict
         state.ledfx_name = "LED_NAME"
         state.ledfx_type = "LED_TYPE"
-        state.ledfx_colour_type = "single"
+        state.ledfx_colour_mode = "single"
         state.ledfx_max_colours = 1
         state.bands_name = "BANDS_NAME"
         state.bands_type = "BANDS_TYPE"
         state.bands_config = config_dict
-        state.bands_colour_type = "single"
+        state.bands_colour_mode = "single"
         state.bands_max_colours = 1
         session.add(state)
         session.commit()

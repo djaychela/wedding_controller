@@ -27,7 +27,7 @@ def update_state_bands(db: Session, effect: schemas.EffectPreset):
 def update_state_ledfx_colours(db: Session, effect: schemas.StateLedFxUpdateColours):
     """ Takes a db session and an Effect and updates the current state to reflect the present Effect"""
     current_state = get_state(db)
-    current_state.ledfx_colour_type = effect.ledfx_colour_type
+    current_state.ledfx_colour_mode = effect.ledfx_colour_mode
     current_state.ledfx_max_colours = effect.ledfx_max_colours
     db.commit()
 
@@ -41,4 +41,5 @@ def get_current_effect(db: Session):
     effect.type = current_state.ledfx_type
     effect.config = current_state.ledfx_config
     return effect
+
 

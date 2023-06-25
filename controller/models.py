@@ -70,12 +70,12 @@ class State(Base):
     ledfx_name = Column(String, index=True)
     ledfx_type = Column(String, index=True)
     ledfx_config = Column(JSON)
-    ledfx_colour_type = Column(String, index=True)
+    ledfx_colour_mode = Column(String, index=True)
     ledfx_max_colours = Column(Integer)
     bands_name = Column(String, index=True)
     bands_type = Column(String, index=True)
     bands_config = Column(JSON)
-    bands_colour_type = Column(String, index=True)
+    bands_colour_mode = Column(String, index=True)
     bands_max_colours = Column(Integer)
     
 

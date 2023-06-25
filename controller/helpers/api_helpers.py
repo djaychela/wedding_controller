@@ -23,7 +23,7 @@ def update_state_from_response(db, response, mode):
 
 def update_state_colours(db, colour_type, max_colours):
     new_state = State()
-    new_state.ledfx_colour_type = colour_type
+    new_state.ledfx_colour_mode = colour_type
     new_state.ledfx_max_colours = max_colours
     state.update_state_ledfx_colours(db, new_state)
 
