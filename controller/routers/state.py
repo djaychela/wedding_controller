@@ -38,17 +38,7 @@ def dummy_song_change(new_state: schemas.StateSetSong, db: Session = Depends(get
     current_state.current_song_title = new_state.current_song_title
     current_state.current_song_artist = new_state.current_song_artist
     db.commit()
+    dancefloor.increase_dancefloor_songs(db=db)
     effect_chosen = api_for_new_song(db, new_state.current_song_id)
-    # song_id = "043bfUkTydw0xJ5JjOT91w"
-    # dancefloor.increase_dancefloor_songs(db=db)
-    # # look up to see if preset exists for song.
-    # # if it does, send that to api
-    # # otherwise create random effect with song owner as colour/s
-    # random_effect = effects.get_random_effect(db)
-    # colours = songs.get_song_colours(song_id, db, mode="list")
-    # print(colours)
-    # print(create_gradient(colours))
-    # # build effect from random root
-    # # get gradient from song owner
-    # # send to create_api_request_string
+
     return effect_chosen

@@ -167,7 +167,7 @@ def create_effects():
         "water",
     ]
 
-    colour_type = [
+    colour_mode = [
         "single",
         "gradient",
         "single",
@@ -199,7 +199,7 @@ def create_effects():
             current_effect = Effect()
             current_effect.name = effect
             current_effect.type = effect
-            current_effect.colour_type = colour_type[idx]
+            current_effect.colour_mode = colour_mode[idx]
             current_effect.max_colours = max_colours[idx]
             session.add(current_effect)
             session.commit()
@@ -212,7 +212,7 @@ def create_effect_presets():
     dict_3 = {"effect": {"config": {"background_brightness": 1.0, "background_color": "#000000", "band_count": 10, "bass_decay_rate": 0.05, "blur": 0.0, "brightness": 1.0, "flip": false, "gradient": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 204, 255) 98%)", "gradient_roll": 0.0, "mirror": true, "sparks_color": "#ffffff", "sparks_decay_rate": 0.15}, "name": "Power", "type": "power"}}
     dict_4 = {"effect": {"config": {"blur": 0.0, "gradient": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(153, 204, 255) 49%, rgb(153, 51, 255) 98%)", "band_count": 10, "background_brightness": 1.0, "gradient_roll": 0.0, "mirror": false, "flip_gradient": false, "brightness": 1.0, "flip": false, "background_color": "#000000"}, "name": "Bands Matrix", "type": "bands_matrix"}}
 
-    colour_type_list = ["gradient", "single", "adjacent", "gradient"]
+    colour_mode_list = ["gradient", "single", "adjacent", "gradient"]
     max_colours_list = [6, 1, 2, 4]
     preset_list = [dict_1, dict_2, dict_3, dict_4]
     song_id = ["043bfUkTydw0xJ5JjOT91w","003vvx7Niy0yvhvHt4a68B","5WwRKYnVy9dekqXAGPbAvU", "0a2cA9H6KuOsoHLCnjl6YL"]
@@ -224,7 +224,7 @@ def create_effect_presets():
             current_preset.name = config["effect"]["name"]
             current_preset.type = config["effect"]["type"]
             current_preset.song_id = song_id[idx]
-            current_preset.colour_type = colour_type_list[idx]
+            current_preset.colour_mode = colour_mode_list[idx]
             current_preset.max_colours = max_colours_list[idx]
             session.add(current_preset)
             session.commit()

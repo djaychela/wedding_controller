@@ -1,4 +1,5 @@
 import colorsys
+import math
 
 from random import randint, choice, shuffle
 
@@ -44,7 +45,11 @@ def adjacent_colours(rgb_colour, d=30 / 360):  # Assumption: r, g, b in [0, 255]
     return hex_list
 
 def sort_colour_list(colour_list):
+    print("sorting colour list")
     print(f"{colour_list=}, {len(colour_list)=}")
+    def lum (r,g,b):
+        return math.sqrt( .241 * r + .691 * g + .068 * b )
+    # colours.sort(key=lambda rgb: lum(*rgb)    )
 
     if colour_list is None:
         return []
@@ -53,10 +58,14 @@ def sort_colour_list(colour_list):
     if len(colour_list) == 1:
         return colour_list
     """Takes a list of hex-format colours and sorts them in brightness order"""
+    # TODO: FIX THIS SO IT WORKS.
     colour_list_nums = [convert_to_rgb_int(colour) for colour in colour_list]
-    colour_list_nums.sort(key=lambda rgb: colorsys.rgb_to_hsv(*rgb))
+    print(f"{colour_list_nums=}")
+    colour_list_nums.sort(key=lambda rgb: lum(*rgb), reverse=False)
+    # colour_list_nums.sort(key=lambda rgb: colorsys.rgb_to_hsv(*rgb), reverse=False)
     colour_list_hex = [convert_int_to_hex(colour) for colour in colour_list_nums]
 
+    print(f"{colour_list_hex=}")
     return colour_list_hex
 
 def create_gradient(colour_list, limit=6):
@@ -110,7 +119,8 @@ def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> l
         # limit to current length in settings - same for both modes
         current_state = state.get_state(db)
         ledfx_max_colours = current_state.ledfx_max_colours
-        colourscheme = colour_list[:ledfx_max_colours]
+        unsorted_colourscheme = colour_list[:ledfx_max_colours]
+        colourscheme = sort_colour_list(unsorted_colourscheme)
     elif colour_mode == "adjacent":
         # song change - pick a voter (random), adjacent the colours
         # dancefloor  - adjacent based on latest to dancefloor

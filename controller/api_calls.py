@@ -86,7 +86,7 @@ def change_ledfx_type(db):
     # TODO: this should check if the song has a user vote?
     # select a random effect from effects in db
     new_effect = effects.get_random_effect(db)
-    print(new_effect.colour_type)
+    print(new_effect.colour_mode)
     # create suitable gradient for chosen effect (single, adjacent, gradient)
     # if single, choose song voter
     # if adjacent, use song voter as adjacent basis
@@ -104,23 +104,22 @@ def wrist_bands_new_song(db):
     executor.submit(bands_current_song(db, timing="delayed"))
 
 def api_for_new_song(db, song_id=None):
-    dancefloor.increase_dancefloor_songs(db=db)
     # look up to see if preset exists for song.
     preset_effect = effects.get_effect_preset_by_song_id(db, song_id)
     if preset_effect:
         # preset present, select output effect, colour type and max colours
         output_effect = preset_effect.config['effect']
-        colour_type = preset_effect.colour_type
+        colour_mode = preset_effect.colour_mode
         max_colours = preset_effect.max_colours
     else:
         # Song does not have a preset, create random effect with voter colours
         num_votes = songs.get_song_votes(db, song_id)
         random_effect = effects.get_random_effect(db, num_votes)
-        colours = songs.get_song_colours(db, song_id, mode="list")
-        colour_type = random_effect.colour_type
+        colours = colour_helpers.create_colourscheme(db)
+        colour_mode = random_effect.colour_mode
         max_colours = random_effect.max_colours        
-        api_helpers.update_state_colours(db, colour_type, max_colours)    
-        colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_type, "floor")
+        api_helpers.update_state_colours(db, colour_mode, max_colours)    
+        colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
         gradient = colour_helpers.create_gradient(colourscheme)
         output_effect = api_helpers.create_api_request_string(random_effect.type, gradient)
 

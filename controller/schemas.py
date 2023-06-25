@@ -63,7 +63,7 @@ class GradientCreate(GradientBase):
 class EffectBase(BaseModel):
     name: str
     type: str
-    colour_type: str
+    colour_mode: str
     max_colours: int
 
     class Config:
