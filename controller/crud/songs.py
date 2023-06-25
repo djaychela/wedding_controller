@@ -25,8 +25,8 @@ def get_song_colours(db: Session, song_id: str, mode="dict"):
         else:
             return [v for k,v in colours.items()]
     else:
-        # TODO: return a random single colour here
         return [colour_helpers.generate_random_hex_colour()]
 
-
-
+def get_song_votes(db: Session, song_id: str):
+    voters = db.query(models.Votes).filter(models.Votes.track_id == song_id).all()
+    return len(voters)

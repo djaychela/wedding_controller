@@ -85,7 +85,7 @@ def change_ledfx_type(db):
     current_gradient = current_config["config"]["gradient"]
     # TODO: this should check if the song has a user vote?
     # select a random effect from effects in db
-    new_effect = effects.get_random_effect()
+    new_effect = effects.get_random_effect(db)
     print(new_effect.colour_type)
     # create suitable gradient for chosen effect (single, adjacent, gradient)
     # if single, choose song voter
@@ -114,15 +114,16 @@ def api_for_new_song(db, song_id=None):
         max_colours = preset_effect.max_colours
     else:
         # Song does not have a preset, create random effect with voter colours
-        random_effect = effects.get_random_effect(db)
+        num_votes = songs.get_song_votes(db, song_id)
+        random_effect = effects.get_random_effect(db, num_votes)
         colours = songs.get_song_colours(db, song_id, mode="list")
         colour_type = random_effect.colour_type
         max_colours = random_effect.max_colours        
+        api_helpers.update_state_colours(db, colour_type, max_colours)    
         colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_type, "floor")
         gradient = colour_helpers.create_gradient(colourscheme)
-        output_effect = api_helpers.create_api_request_string(random_effect.type, colourscheme)
+        output_effect = api_helpers.create_api_request_string(random_effect.type, gradient)
 
-    api_helpers.update_state_colours(db, colour_type, max_colours)    
     api_helpers.perform_api_call(db, output_effect, "sticks")
     
     # TODO: perform calls for wristbands

@@ -19,8 +19,8 @@ def get_effect_types(db: Session, skip: int=0, limit: int=100):
 def get_effect_by_id(db: Session, effect_id: int):
     return db.query(models.EffectPreset).filter(models.EffectPreset.id == effect_id).first()
 
-def get_random_effect(db: Session):
-    return db.query(models.Effect).order_by(func.random()).first()
+def get_random_effect(db: Session, max_colours):
+    return db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).order_by(func.random()).first()
 
 def get_random_effect_preset(db: Session):
     return db.query(models.EffectPreset).order_by(func.random()).first()

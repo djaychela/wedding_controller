@@ -131,3 +131,10 @@ dancefloor entry:
 single - new single colour is latest to dancefloor
 adjacent - adjacent based on latest to dancefloor
 gradient - gradient based on voters and current dancefloor (latest get chosen first).
+
+
+testing:
+003vvx7Niy0yvhvHt4a68B - has a preset
+6gJdDnF2TzfA1WPMXuCa3x - proud mary (lots of votes)
+7xQYVjs4wZNdCwO0EeAWMC - 2 votes
+01qCxvpyyIm0a0RG3uYxEm - 1 vote
