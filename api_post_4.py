@@ -5,6 +5,7 @@ import random
   
 # defining the api-endpoint 
 API_ENDPOINT = "http://127.0.0.1:8888/api/virtuals/virtual-1/effects"
+API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-2"
   
 
 gradient_list = [
@@ -21,6 +22,38 @@ gradient_list = [
     ]
  
 effects_list = ["marching", "bands_matrix", "power", "rain", "glitch", "melt", "melt_and_sparkle", "water", "equalizer"]
+
+false = False
+true = True
+
+
+# THIS CREATES THE VIRTUAL-2 WITH APPROPRIATE SEGMENTS
+data = {
+        "segments": [["wled-stick-1", 0, 99, false], ["wled-stick-1", 100, 199, true], ["wled-stick-1", 200, 299, false], ["wled-stick-2", 0, 99, false], ["wled-stick-2", 100, 199, true], ["wled-stick-2", 200, 299, false], ["wled-stick-3", 0, 99, false], ["wled-stick-3", 100, 199, true], ["wled-stick-3", 200, 299, false], ["wled-stick-4", 0, 99, false], ["wled-stick-4", 100, 199, true], ["wled-stick-4", 200, 299, false], ["wled-stick-5", 0, 99, false], ["wled-stick-5", 100, 199, true], ["wled-stick-5", 200, 299, false]],
+        "virtual-2": {
+        "active": False,
+    }
+}
+
+# THIS DELETES FROM VIRTUAL-2, STOPPING IT WORKING
+
+# data = {
+#         "segments": [],
+#         "virtual-2": {
+#         "active": False,
+#     }
+# }
+
+data_dump = json.dumps(data)
+
+r = requests.post(url = API_ENDPOINT, data = data_dump)
+    
+# extracting response text 
+response_text = r.text
+print(f"The Response was: {response_text}")
+delay = input("Press Enter to change again...")
+
+exit()
 
 
 while True:

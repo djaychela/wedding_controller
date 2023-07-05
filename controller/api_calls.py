@@ -28,7 +28,7 @@ from concurrent.futures import ThreadPoolExecutor
 from .models import EffectPreset
 from .crud import state, dancefloor, effects, songs
 
-from .helpers import colour_helpers, api_helpers
+from .helpers import colour_helpers, api_helpers, bands_helpers
 
 API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
 
@@ -105,7 +105,7 @@ def wrist_bands_new_song(db):
 
 def wrist_bands_animate(db):
     executor = ThreadPoolExecutor(max_workers=3)
-    executor.submit(animate_bands(db))
+    executor.submit(bands_helpers.animate_bands(db))
 
 def api_for_new_song(db, song_id=None):
     # look up to see if preset exists for song.

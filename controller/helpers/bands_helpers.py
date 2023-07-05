@@ -1,6 +1,6 @@
 import time
 
-import api_helpers
+from . import api_helpers
 
 
 def animate_bands(db):
