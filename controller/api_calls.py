@@ -103,6 +103,10 @@ def wrist_bands_new_song(db):
     executor.submit(flash_bands(db))
     executor.submit(bands_current_song(db, timing="delayed"))
 
+def wrist_bands_animate(db):
+    executor = ThreadPoolExecutor(max_workers=3)
+    executor.submit(animate_bands(db))
+
 def api_for_new_song(db, song_id=None):
     # look up to see if preset exists for song.
     preset_effect = effects.get_effect_preset_by_song_id(db, song_id)

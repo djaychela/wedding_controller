@@ -138,3 +138,14 @@ testing:
 6gJdDnF2TzfA1WPMXuCa3x - proud mary (lots of votes)
 7xQYVjs4wZNdCwO0EeAWMC - 2 votes
 01qCxvpyyIm0a0RG3uYxEm - 1 vote
+
+
+Bands:
+
+{"effect": {"config": {"background_brightness": 1.0, "background_color": "#000000", "beat_decay": 2.0, "blur": 6.2, "brightness": 1.0, "color": "blue", "flip": false, "frequency": "1/2 (.-. )", "gradient": "linear-gradient(90deg, #ff0000 0.00%,#ff7800 14.00%,#ffc800 28.00%,#00ff00 42.00%,#00c78c 56.00%,#0000ff 70.00%,#800080 84.00%,#ff00b2 98.00%)", "gradient_name": "Rainbow", "gradient_repeat": 1, "gradient_roll": 0.0, "mirror": false, "modulate": true, "modulation_effect": "sine", "modulation_speed": 0.76, "single_color": true, "solid_color": false, "speed": 0.62, "strobe_decay": 1.5, "strobe_frequency": "1/2 (.-. )"}, "name": "BPM Strobe", "type": "strobe"}}
+
+
+Nice FX:
+{"effect": {"config": {"blur": 0.0, "gradient": "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(0, 0, 255) 24%, rgb(255, 0, 0) 48%, rgb(153, 102, 255) 72%, rgb(255, 255, 255) 96%)", "band_count": 10, "reactivity": 0.5, "background_color": "#000000", "background_brightness": 1.0, "mirror": false, "speed": 0.5, "gradient_roll": 0.0, "flip": false, "brightness": 1.0}, "name": "Block Reflections", "type": "block_reflections"}}
+
+{"effect": {"config": {"brightness": 1.0, "background_brightness": 1.0, "gradient": "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)", "speed": 0.5, "background_color": "#000000", "blur": 0.0, "reactivity": 0.5, "gradient_roll": 0.0, "mirror": false, "flip": false}, "name": "Block Reflections", "type": "block_reflections"}}

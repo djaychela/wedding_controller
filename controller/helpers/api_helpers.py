@@ -8,7 +8,8 @@ from ..models import EffectPreset, State
 STICKS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
 BANDS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-bands/effects"
 DMX_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-dmx/effects"
-MODE = "test"
+WLED_BANDS_API_ENDPOINT = "http://192.168.1.33/json"
+MODE = "run"
 
 def update_state_from_response(db, response, mode):
     response_dict = response.json()    
@@ -49,6 +50,8 @@ def perform_api_call(db, data, mode="sticks"):
         endpoint = STICKS_API_ENDPOINT
     elif mode == "bands":
         endpoint = BANDS_API_ENDPOINT
+    elif mode == "bands_wled":
+        endpoint = WLED_BANDS_API_ENDPOINT
     else:
         endpoint = DMX_API_ENDPOINT
     
