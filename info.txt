@@ -159,3 +159,6 @@ Working:
 {"effect": {"config": {"background_brightness": 1.0, "background_color": "#000000", "beat_decay": 1.0, "blur": 0.0, "brightness": 1.0, "flip": false, "gradient": "#ff0000", "gradient_roll": 0.0, "mirror": false, "strobe_decay": 1.5, "strobe_frequency": "1/4 (.o. )"}, "name": "BPM Strobe", "type": "strobe"}}
 Good for bands song voters:
 {"effect": {"config": {"gradient": "linear-gradient(90deg, rgb(128, 0, 128) 0%, rgb(0, 0, 255) 25%, rgb(0, 128, 128) 50%, rgb(0, 255, 0) 75%, rgb(255, 200, 0) 100%)", "gradient_roll": 0.1, "modulation_effect": "sine", "modulate": true, "blur": 0.0, "modulation_speed": 1, "speed": 2.7, "mirror": false, "flip": false, "brightness": 1.0, "background_brightness": 1.0, "background_color": "#000000"}, "name": "Gradient", "type": "gradient"}}
+
+Blinding Lights:
+{"effect": {"config": {"blur": 0.0, "flip": false, "gradient_roll": 0.0, "background_brightness": 0.14, "strobe_color": "#ffffff", "color_step": 0.0625, "mirror": false, "bass_strobe_decay_rate": 0.5, "color_shift_delay": 1.0, "background_color": "#0033ff", "strobe_decay_rate": 0.5, "brightness": 1.0, "strobe_width": 10, "gradient": "Dancefloor"}, "name": "Strobe", "type": "real_strobe"}}

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, FastAPI, HTTPException
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
 
 from .. import models, schemas
@@ -22,23 +22,17 @@ def store_current_song(new_state: schemas.StateSetSong, db: Session = Depends(ge
     current_state.current_song_artist = new_state.current_song_artist
     db.commit()
     dancefloor.increase_dancefloor_songs(db=db)
-    # TODO: trigger new effect generation here.
-    # Wrist bands should flash colour of song owner, if there is one
-    # New Effect selected for song - random or programmed
-    # Colour Palette Selected on Song owner and those on dancefloor
-    # Colour Pallete for song is at crud.songs.get_song_colours (mode="list")
-    # db_effect = crud.get_random_effect(db=db)
-    # update_ledfx_state(db, db_effect)
+
     return current_state
 
 @router.post("/dummy_song_change")
-def dummy_song_change(new_state: schemas.StateSetSong, db: Session = Depends(get_db)):
+async def dummy_song_change(new_state: schemas.StateSetSong, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     current_state = state.get_state(db)
     current_state.current_song_id = new_state.current_song_id
     current_state.current_song_title = new_state.current_song_title
     current_state.current_song_artist = new_state.current_song_artist
     db.commit()
     dancefloor.increase_dancefloor_songs(db=db)
-    effect_chosen = api_for_new_song(db, new_state.current_song_id)
+    background_tasks.add_task(api_for_new_song, db, new_state.current_song_id)
 
-    return effect_chosen
+    return {"0": True}

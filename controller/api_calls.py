@@ -75,7 +75,7 @@ def dancefloor_entry_exit(db):
     gradient = colour_helpers.create_gradient(adj_colourscheme)
     data = api_helpers.create_api_request_string(current_state.ledfx_type, gradient)
     api_helpers.perform_api_call(db, data, "sticks")
-
+    bands_current_song(db, timing="instant")
     # TODO: call bands_current_song(db, timing = "instant") to update bands colours
 
 
@@ -101,15 +101,12 @@ def bands_current_song(db, timing = "instant"):
     if timing == "delayed":
         # 10 second delay before api call (when called alongside flash mode)
         time.sleep(10)
-    # get and refine colourscheme
+    
     colourscheme = colour_helpers.create_colourscheme(db)
-    # colour mode fixed to single for BPM strobe effect
     current_state = state.get_state(db)
-    print(current_state.ledfx_colour_mode)
     adj_colourscheme = colour_helpers.refine_colourscheme(db, colourscheme, current_state.ledfx_colour_mode, "song")
     gradient = colour_helpers.create_gradient(adj_colourscheme)
-    print(f"{gradient=}")
-    # create data call for bands
+    
     data = api_helpers.create_api_request_string("bands", gradient)
     api_helpers.perform_api_call(db, data, mode="bands")
 
