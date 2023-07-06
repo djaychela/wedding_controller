@@ -45,8 +45,8 @@ def adjacent_colours(rgb_colour, d=30 / 360):  # Assumption: r, g, b in [0, 255]
     return hex_list
 
 def sort_colour_list(colour_list):
-    print("sorting colour list")
-    print(f"{colour_list=}, {len(colour_list)=}")
+    # print("sorting colour list")
+    # print(f"{colour_list=}, {len(colour_list)=}")
     def lum (r,g,b):
         return math.sqrt( .241 * r + .691 * g + .068 * b )
     # colours.sort(key=lambda rgb: lum(*rgb)    )
@@ -60,12 +60,12 @@ def sort_colour_list(colour_list):
     """Takes a list of hex-format colours and sorts them in brightness order"""
     # TODO: FIX THIS SO IT WORKS.
     colour_list_nums = [convert_to_rgb_int(colour) for colour in colour_list]
-    print(f"{colour_list_nums=}")
+    # print(f"{colour_list_nums=}")
     colour_list_nums.sort(key=lambda rgb: lum(*rgb), reverse=False)
     # colour_list_nums.sort(key=lambda rgb: colorsys.rgb_to_hsv(*rgb), reverse=False)
     colour_list_hex = [convert_int_to_hex(colour) for colour in colour_list_nums]
 
-    print(f"{colour_list_hex=}")
+    # print(f"{colour_list_hex=}")
     return colour_list_hex
 
 def create_gradient(colour_list, limit=6):

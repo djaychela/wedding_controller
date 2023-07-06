@@ -97,10 +97,37 @@ def change_ledfx_type(db):
     data = api_helpers.create_api_request_string(random_effect, current_gradient)
     api_helpers.perform_api_call(db, data, "sticks")
 
-def wrist_bands_new_song(db):
+def bands_current_song(db, timing = "instant"):
+    if timing == "delayed":
+        # 10 second delay before api call (when called alongside flash mode)
+        time.sleep(10)
+    # get and refine colourscheme
+    colourscheme = colour_helpers.create_colourscheme(db)
+    # colour mode fixed to single for BPM strobe effect
+    current_state = state.get_state(db)
+    print(current_state.ledfx_colour_mode)
+    adj_colourscheme = colour_helpers.refine_colourscheme(db, colourscheme, current_state.ledfx_colour_mode, "song")
+    gradient = colour_helpers.create_gradient(adj_colourscheme)
+    print(f"{gradient=}")
+    # create data call for bands
+    data = api_helpers.create_api_request_string("bands", gradient)
+    api_helpers.perform_api_call(db, data, mode="bands")
+
+def flash_bands(db, song_id=None):
+    """Looks up voters for current song"""
+    song_colours = songs.get_song_colours(db, song_id, mode="list", strict=True)
+    if len(song_colours) == 0:
+        # No-one voted, so set the bands for the song
+        bands_current_song(db, "instant")
+        return
+    gradient = colour_helpers.create_gradient(song_colours)
+    data = api_helpers.create_api_request_string("bands_flash", gradient)
+    api_helpers.perform_api_call(db, data, mode="bands")
+
+def wrist_bands_new_song(db, song_id):
     # perform both calls for wrist band.  Second call has inherent delay.
     executor = ThreadPoolExecutor(max_workers=3)
-    executor.submit(flash_bands(db))
+    executor.submit(flash_bands(db, song_id))
     executor.submit(bands_current_song(db, timing="delayed"))
 
 def wrist_bands_animate(db):
@@ -128,27 +155,12 @@ def api_for_new_song(db, song_id=None):
         output_effect = api_helpers.create_api_request_string(random_effect.type, gradient)
 
     api_helpers.perform_api_call(db, output_effect, "sticks")
-    
+    wrist_bands_new_song(db, song_id)
     # TODO: perform calls for wristbands
+    # flash_bands(db, song_id)
+    # bands_current_song(db, "instant")
     return output_effect
 
-def flash_bands(db, song_id=None):
-    # look up colours of user/s who voted for song
-    song_colours = songs.get_song_colours(db, song_id, mode="list")
-    # TODO: set api to flash on this colour/s
-    data = api_helpers.create_api_request_string("flash", song_colours)
-    api_helpers.perform_api_call(db, data, mode="bands")
 
-def bands_current_song(db, timing = "instant"):
-    if timing == "delayed":
-        # 10 second delay before api call (when called alongside flash mode)
-        time.sleep(10)
-    # get and refine colourscheme
-    colourscheme = colour_helpers.create_colourscheme(db)
-    adj_colourscheme = colour_helpers.refine_colourscheme(db, colourscheme)
-    # create data call for bands
-    # TODO: create appropriate request string for bands effect
-    data = api_helpers.create_api_request_string("bands", adj_colourscheme)
-    api_helpers.perform_api_call(db, data, mode="bands")
 
 

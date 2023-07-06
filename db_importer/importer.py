@@ -122,9 +122,10 @@ def create_state():
         state.ledfx_type = "LED_TYPE"
         state.ledfx_colour_mode = "single"
         state.ledfx_max_colours = 1
+        bands_config_dict = {"effect": {"config": {"strobe_frequency": "1/4 (.o. )", "gradient": "#ff0000", "gradient_roll": 0.0, "blur": 0.0, "beat_decay": 1, "mirror": false, "flip": false, "brightness": 1.0, "background_brightness": 1.0, "strobe_decay": 1.5, "background_color": "#000000"}, "name": "BPM Strobe", "type": "strobe"}}
         state.bands_name = "BANDS_NAME"
         state.bands_type = "BANDS_TYPE"
-        state.bands_config = config_dict
+        state.bands_config = bands_config_dict
         state.bands_colour_mode = "single"
         state.bands_max_colours = 1
         session.add(state)
