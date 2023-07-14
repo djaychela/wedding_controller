@@ -40,10 +40,6 @@ def led_fx_post(db: Session, db_effect):
 
     update_ledfx_state(db=db, effect=db_effect)
 
-    # response_text = r.text
-    # print(f"{response_text=}")
-
-
 def sort_colour_list(colour_list):
     if colour_list is None:
         return []

@@ -24,6 +24,4 @@ def create_user(db: Session, user: schemas.UserCreate):
 
 def get_user_colours_for_song(db:Session, current_song_id: int = 1):
     users = db.query(models.User).join(models.association_table).join(models.Song).filter(models.Song.id == current_song_id).all()
-    # for user in users:
-    #     print(user.name, user.colour)
     return users

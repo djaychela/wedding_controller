@@ -18,10 +18,12 @@ def choose_random_colour(colour_list):
     # returns a single colour from a list, as a list with a single member
     return [choice(colour_list)]
 
+
 def convert_int_to_hex(colour_tuple) -> str:
     return "#{:02x}{:02x}{:02x}".format(
         colour_tuple[0], colour_tuple[1], colour_tuple[2]
     )
+
 
 def convert_to_rgb(colour_string):
     colours = colour_string.lstrip("#")
@@ -31,7 +33,6 @@ def convert_to_rgb(colour_string):
 def convert_to_rgb_int(colour_string):
     colours = colour_string.lstrip("#")
     return tuple(int(colours[i : i + 2], 16) for i in (0, 2, 4))
-
 
 
 def adjacent_colours(rgb_colour, d=30 / 360):  # Assumption: r, g, b in [0, 255]
@@ -47,11 +48,9 @@ def adjacent_colours(rgb_colour, d=30 / 360):  # Assumption: r, g, b in [0, 255]
     return hex_list
 
 def sort_colour_list(colour_list):
-    # print("sorting colour list")
-    # print(f"{colour_list=}, {len(colour_list)=}")
     def lum (r,g,b):
         return math.sqrt( .241 * r + .691 * g + .068 * b )
-    # colours.sort(key=lambda rgb: lum(*rgb)    )
+
 
     if colour_list is None:
         return []
@@ -60,14 +59,11 @@ def sort_colour_list(colour_list):
     if len(colour_list) == 1:
         return colour_list
     """Takes a list of hex-format colours and sorts them in brightness order"""
-    # TODO: FIX THIS SO IT WORKS.
+    
     colour_list_nums = [convert_to_rgb_int(colour) for colour in colour_list]
-    # print(f"{colour_list_nums=}")
     colour_list_nums.sort(key=lambda rgb: lum(*rgb), reverse=False)
-    # colour_list_nums.sort(key=lambda rgb: colorsys.rgb_to_hsv(*rgb), reverse=False)
     colour_list_hex = [convert_int_to_hex(colour) for colour in colour_list_nums]
 
-    # print(f"{colour_list_hex=}")
     return colour_list_hex
 
 def create_gradient(colour_list, limit=6):
@@ -81,7 +77,6 @@ def create_gradient(colour_list, limit=6):
         colour_list = colour_list[:limit]
     if len(colour_list) == 0:
         colour_list = [generate_random_hex_colour()]
-        # TODO: get voter colour for current song instead of random colour
     increment = int(98 / len(colour_list))
     location = 0
     stem = "linear-gradient(90deg, rgb(0, 0, 0) 0%"

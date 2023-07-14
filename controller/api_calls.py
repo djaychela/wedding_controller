@@ -1,71 +1,13 @@
-# calls to virtual-1
-# calls to virtual-bands
-# calls to virtual-dmx
-
-
-"""
-Bands calls are to last for ~10 seconds, then go to pattern to match dancefloor and current palette
-virtual-1 calls to start straight away
-virtual-dmx calls to start straight away
-
-four different configs needed for fx
-bands - flash
-bands - current song
-stick - current song
-dmx   - current song
-
-complementary patterns needed for bands and stick in particular
-
-"""
-
 import time
-import random
-import requests
 import json
 
 from concurrent.futures import ThreadPoolExecutor
 
-from .models import EffectPreset
-from .crud import state, dancefloor, effects, songs
+from .crud import state, effects, songs
 
 from .helpers import colour_helpers, api_helpers, bands_helpers
 
 API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
-
-gradient_list = [
-    "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 120, 0) 14%, rgb(255, 200, 0) 28%, rgb(0, 255, 0) 42%, rgb(0, 199, 140) 56%, rgb(0, 0, 255) 70%, rgb(128, 0, 128) 84%, rgb(255, 0, 178) 98%)",
-    "linear-gradient(90deg, rgb(255, 0, 0) 0%,  rgb(255, 0, 178) 98%)",
-    "linear-gradient(90deg, rgb(0, 0, 0) 0%,  rgb(127, 127, 127) 98%)",
-    "linear-gradient(90deg, rgb(0, 0, 0) 0%,  rgb(0, 255, 0) 98%)",
-    "linear-gradient(90deg, rgb(0, 0, 0) 0%,  rgb(255, 0, 0) 98%)",
-    "linear-gradient(90deg, rgb(0, 0, 0) 0%,  rgb(0, 0, 255) 98%)",
-    "linear-gradient(90deg, rgb(0, 0, 0) 0%,  rgb(0, 255, 255) 98%)",
-    "linear-gradient(90deg, rgb(0, 0, 0) 0%,  rgb(255, 0, 255) 98%)",
-    "linear-gradient(90deg, rgb(0, 0, 0) 0%,  rgb(255, 255, 0) 98%)",
-    "linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 0, 0) 98%)",
-]
-
-effects_list = [
-    "marching",
-    "bands_matrix",
-    "power",
-    "rain",
-    "glitch",
-    "melt",
-    "melt_and_sparkle",
-    "water",
-    "equalizer",
-]
-
-
-def ledfx_random_api_call(db):
-    # Should update state to reflect current status once random selected
-    random_gradient = random.choice(gradient_list)
-    random_effect = random.choice(effects_list)
-
-    data = api_helpers.create_api_request_string(random_effect, random_gradient)
-    api_helpers.perform_api_call(db, data, "sticks")
-
 
 def dancefloor_entry_exit(db):
     colourscheme = colour_helpers.create_colourscheme(db)
@@ -76,33 +18,10 @@ def dancefloor_entry_exit(db):
     data = api_helpers.create_api_request_string(current_state.ledfx_type, gradient)
     api_helpers.perform_api_call(db, data, "sticks")
     bands_current_song(db, timing="instant")
-    # TODO: call bands_current_song(db, timing = "instant") to update bands colours
-
-
-def change_ledfx_type(db):
-    current_state = state.get_state(db)
-    current_config = current_state.ledfx_config
-    current_gradient = current_config["config"]["gradient"]
-    # TODO: this should check if the song has a user vote?
-    # select a random effect from effects in db
-    new_effect = effects.get_random_effect(db)
-    print(new_effect.colour_mode)
-    # create suitable gradient for chosen effect (single, adjacent, gradient)
-    # if single, choose song voter
-    # if adjacent, use song voter as adjacent basis
-    # if gradient, find number and create gradient from voter and df present
-
-    random_effect = random.choice(effects_list)
-
-    data = api_helpers.create_api_request_string(random_effect, current_gradient)
-    api_helpers.perform_api_call(db, data, "sticks")
 
 def bands_current_song(db, timing = "instant"):
     if timing == "delayed":
-        # 10 second delay before api call (when called alongside flash mode)
         time.sleep(10)
-    
-    # colourscheme = colour_helpers.create_colourscheme(db)
     current_state = state.get_state(db)
     colourscheme = json.loads(current_state.colours)
     adj_colourscheme = colour_helpers.refine_colourscheme(db, colourscheme, current_state.ledfx_colour_mode, "song")
@@ -123,7 +42,7 @@ def flash_bands(db, song_id=None):
     api_helpers.perform_api_call(db, data, mode="bands")
 
 def wrist_bands_new_song(db, song_id):
-    # perform both calls for wrist band.  Second call has inherent delay.
+    # perform both calls for wrist band.  Second call is delayed.
     executor = ThreadPoolExecutor(max_workers=3)
     executor.submit(flash_bands(db, song_id))
     executor.submit(bands_current_song(db, timing="delayed"))
@@ -146,7 +65,6 @@ def api_for_new_song(db, song_id=None):
         state.update_state_colours(db, preset_colours)
     else:
         # Song does not have a preset, create random effect with voter colours
-        print("Not a preset...")
         num_votes = songs.get_song_votes(db, song_id)
         random_effect = effects.get_random_effect(db, num_votes)
         colours = colour_helpers.create_colourscheme(db)
@@ -155,7 +73,6 @@ def api_for_new_song(db, song_id=None):
         state.update_state_ledfx_colours(db, colour_mode, max_colours)
         colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
         state.update_state_colours(db, colourscheme)
-
         gradient = colour_helpers.create_gradient(colourscheme)
         output_effect = api_helpers.create_api_request_string(random_effect.type, gradient)
 
@@ -182,7 +99,6 @@ def new_random_effect(db, song_id=None):
 
 def new_random_colour(db, song_id=None):
     current_state = state.get_state(db)
-    # get current ledfx_max_colours, led_fx_colour_mode
     colour_mode = current_state.ledfx_colour_mode
     max_colours = current_state.ledfx_max_colours
     colours = [colour_helpers.generate_random_hex_colour() for _ in range(max_colours)]    

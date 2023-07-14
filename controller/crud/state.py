@@ -34,10 +34,10 @@ def update_state_ledfx_colours(db: Session, colour_mode, max_colours):
     db.commit()
 
 def update_state_colours(db: Session, colours):
+    """ Takes a list of colours, and stores it in the database as json"""
     current_state = get_state(db)
     current_state.colours = json.dumps(colours)
-    db.commit()
-    # return db.query(models.State).filter(models.State.id == 1).first()    
+    db.commit()   
 
 def get_current_effect(db: Session):
     current_state = get_state(db)
