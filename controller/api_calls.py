@@ -102,8 +102,9 @@ def bands_current_song(db, timing = "instant"):
         # 10 second delay before api call (when called alongside flash mode)
         time.sleep(10)
     
-    colourscheme = colour_helpers.create_colourscheme(db)
+    # colourscheme = colour_helpers.create_colourscheme(db)
     current_state = state.get_state(db)
+    colourscheme = json.loads(current_state.colours)
     adj_colourscheme = colour_helpers.refine_colourscheme(db, colourscheme, current_state.ledfx_colour_mode, "song")
     gradient = colour_helpers.create_gradient(adj_colourscheme)
     
@@ -139,6 +140,12 @@ def api_for_new_song(db, song_id=None):
         output_effect = preset_effect.config['effect']
         colour_mode = preset_effect.colour_mode
         max_colours = preset_effect.max_colours
+        # update state.colours from preset
+        gradient = output_effect["config"]["gradient"]
+        preset_colours = colour_helpers.extract_gradient(gradient)
+        current_state = state.get_state(db)
+        current_state.colours = json.dumps(preset_colours)
+        state.update_state_colours(db, current_state)
     else:
         # Song does not have a preset, create random effect with voter colours
         num_votes = songs.get_song_votes(db, song_id)
@@ -153,9 +160,30 @@ def api_for_new_song(db, song_id=None):
 
     api_helpers.perform_api_call(db, output_effect, "sticks")
     wrist_bands_new_song(db, song_id)
-    # TODO: perform calls for wristbands
-    # flash_bands(db, song_id)
-    # bands_current_song(db, "instant")
+    return output_effect
+
+def new_random_effect(db, song_id=None):
+    # # look up to see if preset exists for song.
+    # preset_effect = effects.get_effect_preset_by_song_id(db, song_id)
+    # if preset_effect:
+    #     # preset present, select output effect, colour type and max colours
+    #     output_effect = preset_effect.config['effect']
+    #     colour_mode = preset_effect.colour_mode
+    #     max_colours = preset_effect.max_colours
+    # else:
+        # Song does not have a preset, create random effect with voter colours
+    num_votes = songs.get_song_votes(db, song_id)
+    random_effect = effects.get_random_effect(db, num_votes)
+    colours = colour_helpers.create_colourscheme(db)
+    colour_mode = random_effect.colour_mode
+    max_colours = random_effect.max_colours
+    api_helpers.update_state_colours(db, colour_mode, max_colours)    
+    colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
+    gradient = colour_helpers.create_gradient(colourscheme)
+    output_effect = api_helpers.create_api_request_string(random_effect.type, gradient)
+
+    api_helpers.perform_api_call(db, output_effect, "sticks")
+    wrist_bands_new_song(db, song_id)
     return output_effect
 
 

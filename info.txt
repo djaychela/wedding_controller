@@ -162,3 +162,9 @@ Good for bands song voters:
 
 Blinding Lights:
 {"effect": {"config": {"blur": 0.0, "flip": false, "gradient_roll": 0.0, "background_brightness": 0.14, "strobe_color": "#ffffff", "color_step": 0.0625, "mirror": false, "bass_strobe_decay_rate": 0.5, "color_shift_delay": 1.0, "background_color": "#0033ff", "strobe_decay_rate": 0.5, "brightness": 1.0, "strobe_width": 10, "gradient": "Dancefloor"}, "name": "Strobe", "type": "real_strobe"}}
+
+
+gradients to extract:
+
+linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 204, 255) 98%)
+linear-gradient(90deg, #ff0000 0.00%,#ff7800 14.00%,#ffc800 28.00%,#00ff00 42.00%,#00c78c 56.00%,#0000ff 70.00%,#800080 84.00%,#ff00b2 98.00%)

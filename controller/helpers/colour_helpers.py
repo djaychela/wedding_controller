@@ -1,5 +1,7 @@
 import colorsys
 import math
+import json
+import re
 
 from random import randint, choice, shuffle
 
@@ -109,6 +111,8 @@ def create_colourscheme(db) -> list:
     if len(current_colours) == 0:
         # No votes, no-one on the dancefloor, so return a single random colour
         current_colours = [generate_random_hex_colour()]
+    current_state.colours = json.dumps(current_colours)
+    state.update_state_colours(db, current_state)
     return current_colours
 
 
@@ -141,3 +145,13 @@ def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> l
         
     return colourscheme
             
+def extract_gradient(gradient_string):
+    """Takes a gradient string in rgb or hex value.
+    Returns a list of hex values of colours."""
+    regexes = [r"(\d+),\s*(\d+),\s*(\d+)", r"#[A-Fa-f0-9]+"]
+    rgb_matches = re.findall(r"(\d+),\s*(\d+),\s*(\d+)", gradient_string)
+    hex_matches = [ convert_int_to_hex([int(x) for x in rgb]) for rgb in rgb_matches]
+    hex_finds = re.findall(r"#[A-Fa-f0-9]+", gradient_string)
+    if hex_finds:
+        hex_matches += hex_finds
+    return hex_matches

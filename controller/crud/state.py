@@ -31,8 +31,11 @@ def update_state_ledfx_colours(db: Session, effect: schemas.StateLedFxUpdateColo
     current_state.ledfx_max_colours = effect.ledfx_max_colours
     db.commit()
 
-def store_state(db: Session, state: schemas.StateBase):
-    return db.query(models.State).filter(models.State.id == 1).first()    
+def update_state_colours(db: Session, state: schemas.StateBase):
+    current_state = get_state(db)
+    current_state.colours = state.colours
+    db.commit()
+    # return db.query(models.State).filter(models.State.id == 1).first()    
 
 def get_current_effect(db: Session):
     current_state = get_state(db)

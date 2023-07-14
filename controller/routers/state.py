@@ -5,7 +5,8 @@ from .. import models, schemas
 from ..database import SessionLocal, engine
 from ..dependencies import get_db
 from ..crud import state, dancefloor, effects, songs #import get_state, update_ledfx_state
-from ..api_calls import api_for_new_song
+from .. import api_calls
+# from ..api_calls import api_for_new_song
 
 router = APIRouter(prefix="/state",)
 
@@ -22,7 +23,7 @@ def store_current_song(new_state: schemas.StateSetSong, background_tasks: Backgr
     current_state.current_song_artist = new_state.current_song_artist
     db.commit()
     dancefloor.increase_dancefloor_songs(db=db)
-    background_tasks.add_task(api_for_new_song, db, new_state.current_song_id)
+    background_tasks.add_task(api_calls.api_for_new_song, db, new_state.current_song_id)
 
     return current_state
 
@@ -34,6 +35,12 @@ async def dummy_song_change(new_state: schemas.StateSetSong, background_tasks: B
     current_state.current_song_artist = new_state.current_song_artist
     db.commit()
     dancefloor.increase_dancefloor_songs(db=db)
-    background_tasks.add_task(api_for_new_song, db, new_state.current_song_id)
+    background_tasks.add_task(api_calls.api_for_new_song, db, new_state.current_song_id)
 
     return {"0": True}
+
+@router.get("/change_effect")
+def read_state(db: Session = Depends(get_db)):
+    api_calls.new_random_effect(db)
+    current_state = state.get_state(db)
+    return current_state

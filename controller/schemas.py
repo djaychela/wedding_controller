@@ -114,6 +114,7 @@ class StateBase(BaseModel):
     bands_config: Optional[dict]
     bands_colour_mode: str
     bands_max_colours: int
+    colours: Optional[str]
 
     class Config:
         orm_mode = True

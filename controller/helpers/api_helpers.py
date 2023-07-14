@@ -9,7 +9,7 @@ STICKS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
 BANDS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/wled-bands/effects"
 DMX_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-dmx/effects"
 WLED_BANDS_API_ENDPOINT = "http://192.168.1.33/json"
-MODE = "run"
+MODE = "test"
 
 def update_state_from_response(db, response, mode):
     response_dict = response.json()    

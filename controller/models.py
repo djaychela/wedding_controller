@@ -67,6 +67,7 @@ class State(Base):
     current_song_id = Column(String)
     current_song_title = Column(String, index=True)
     current_song_artist = Column(String, index=True)
+    colours = Column(String)
     ledfx_name = Column(String, index=True)
     ledfx_type = Column(String, index=True)
     ledfx_config = Column(JSON)
