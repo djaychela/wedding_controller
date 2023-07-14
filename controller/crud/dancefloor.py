@@ -2,6 +2,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 
 from .. import models, schemas
+from ..helpers import colour_helpers
+
+import time
 
 def get_user_by_nfc_id(db:Session, nfc_id: str):
     return db.query(models.User).filter(models.User.nfc_id == nfc_id).first()
@@ -17,10 +20,12 @@ def get_dancefloor_colours(db: Session, list_mode=False):
 
 def get_last_n_dancers(db: Session, list_mode=False, num_dancers = 1):
     result = db.query(models.Dancefloor).with_entities(models.Dancefloor.dancer_colour).order_by(models.Dancefloor.id.desc()).limit(num_dancers).all()
-    if not list_mode:
-        return result
-    else:
+    if not result:
+        # no-one on the dancefloor, so make some colours up!
+        result = [(colour_helpers.generate_random_hex_colour(), )]
+    if list_mode:
         return [colour[0] for colour in result]
+    return result
 
 
 def increase_dancefloor_songs(db: Session):

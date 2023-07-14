@@ -2,6 +2,8 @@ from sqlalchemy import update
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import func
 
+import json
+
 from .. import models, schemas
 
 
@@ -24,16 +26,16 @@ def update_state_bands(db: Session, effect: schemas.EffectPreset):
     current_state.bands_config = effect.config
     db.commit()
 
-def update_state_ledfx_colours(db: Session, effect: schemas.StateLedFxUpdateColours):
+def update_state_ledfx_colours(db: Session, colour_mode, max_colours):
     """ Takes a db session and an Effect and updates the current state to reflect the present Effect"""
     current_state = get_state(db)
-    current_state.ledfx_colour_mode = effect.ledfx_colour_mode
-    current_state.ledfx_max_colours = effect.ledfx_max_colours
+    current_state.ledfx_colour_mode = colour_mode
+    current_state.ledfx_max_colours = max_colours
     db.commit()
 
-def update_state_colours(db: Session, state: schemas.StateBase):
+def update_state_colours(db: Session, colours):
     current_state = get_state(db)
-    current_state.colours = state.colours
+    current_state.colours = json.dumps(colours)
     db.commit()
     # return db.query(models.State).filter(models.State.id == 1).first()    
 

@@ -111,8 +111,7 @@ def create_colourscheme(db) -> list:
     if len(current_colours) == 0:
         # No votes, no-one on the dancefloor, so return a single random colour
         current_colours = [generate_random_hex_colour()]
-    current_state.colours = json.dumps(current_colours)
-    state.update_state_colours(db, current_state)
+    state.update_state_colours(db, current_colours)
     return current_colours
 
 

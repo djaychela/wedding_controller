@@ -40,7 +40,15 @@ async def dummy_song_change(new_state: schemas.StateSetSong, background_tasks: B
     return {"0": True}
 
 @router.get("/change_effect")
-def read_state(db: Session = Depends(get_db)):
-    api_calls.new_random_effect(db)
+def change_effect(db: Session = Depends(get_db)):
     current_state = state.get_state(db)
+    api_calls.new_random_effect(db, current_state.current_song_id)
+    # current_state = state.get_state(db)
+    return current_state
+
+@router.get("/change_colour")
+def change_colour(db: Session = Depends(get_db)):
+    current_state = state.get_state(db)
+    api_calls.new_random_colour(db, current_state.current_song_id)
+    # current_state = state.get_state(db)
     return current_state

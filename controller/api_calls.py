@@ -143,18 +143,19 @@ def api_for_new_song(db, song_id=None):
         # update state.colours from preset
         gradient = output_effect["config"]["gradient"]
         preset_colours = colour_helpers.extract_gradient(gradient)
-        current_state = state.get_state(db)
-        current_state.colours = json.dumps(preset_colours)
-        state.update_state_colours(db, current_state)
+        state.update_state_colours(db, preset_colours)
     else:
         # Song does not have a preset, create random effect with voter colours
+        print("Not a preset...")
         num_votes = songs.get_song_votes(db, song_id)
         random_effect = effects.get_random_effect(db, num_votes)
         colours = colour_helpers.create_colourscheme(db)
         colour_mode = random_effect.colour_mode
         max_colours = random_effect.max_colours        
-        api_helpers.update_state_colours(db, colour_mode, max_colours)    
+        state.update_state_ledfx_colours(db, colour_mode, max_colours)
         colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
+        state.update_state_colours(db, colourscheme)
+
         gradient = colour_helpers.create_gradient(colourscheme)
         output_effect = api_helpers.create_api_request_string(random_effect.type, gradient)
 
@@ -163,29 +164,35 @@ def api_for_new_song(db, song_id=None):
     return output_effect
 
 def new_random_effect(db, song_id=None):
-    # # look up to see if preset exists for song.
-    # preset_effect = effects.get_effect_preset_by_song_id(db, song_id)
-    # if preset_effect:
-    #     # preset present, select output effect, colour type and max colours
-    #     output_effect = preset_effect.config['effect']
-    #     colour_mode = preset_effect.colour_mode
-    #     max_colours = preset_effect.max_colours
-    # else:
-        # Song does not have a preset, create random effect with voter colours
     num_votes = songs.get_song_votes(db, song_id)
     random_effect = effects.get_random_effect(db, num_votes)
     colours = colour_helpers.create_colourscheme(db)
     colour_mode = random_effect.colour_mode
     max_colours = random_effect.max_colours
-    api_helpers.update_state_colours(db, colour_mode, max_colours)    
+    state.update_state_ledfx_colours(db, colour_mode, max_colours)    
     colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
+    state.update_state_colours(db, colourscheme)
     gradient = colour_helpers.create_gradient(colourscheme)
     output_effect = api_helpers.create_api_request_string(random_effect.type, gradient)
 
     api_helpers.perform_api_call(db, output_effect, "sticks")
-    wrist_bands_new_song(db, song_id)
+    bands_current_song(db, "instant")
     return output_effect
 
 
+def new_random_colour(db, song_id=None):
+    current_state = state.get_state(db)
+    # get current ledfx_max_colours, led_fx_colour_mode
+    colour_mode = current_state.ledfx_colour_mode
+    max_colours = current_state.ledfx_max_colours
+    colours = [colour_helpers.generate_random_hex_colour() for _ in range(max_colours)]    
+    colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
+    state.update_state_colours(db, colourscheme)
+    gradient = colour_helpers.create_gradient(colourscheme)
+    output_effect = api_helpers.create_api_request_string(current_state.ledfx_type, gradient)
+
+    api_helpers.perform_api_call(db, output_effect, "sticks")
+    bands_current_song(db, "instant")
+    return output_effect
 
 

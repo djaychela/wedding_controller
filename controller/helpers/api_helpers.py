@@ -22,12 +22,6 @@ def update_state_from_response(db, response, mode):
     elif mode == "bands":
         state.update_state_bands(db, new_effect_preset)
 
-def update_state_colours(db, colour_mode, max_colours):
-    new_state = State()
-    new_state.ledfx_colour_mode = colour_mode
-    new_state.ledfx_max_colours = max_colours
-    state.update_state_ledfx_colours(db, new_state)
-
 
 def create_api_request_string(type, gradient):
     # TODO: do lookup of prototype strings from database
