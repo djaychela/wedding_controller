@@ -10,7 +10,8 @@ from ..crud import dancefloor, state, songs
 def generate_random_hex_colour() -> str:
     # returns a 6-digit hex colour in the format #AABBCC
     candidates = ["#ff0000", "#00ff00", "#0000ff", "#fa9d00", "#ffff00", "#9370db", "#808080", "#00ffff", "#ff00ff"]	
-    return choice(candidates)
+    colour = choice(candidates)
+    return colour
 
 def choose_random_colour(colour_list):
     # returns a single colour from a list, as a list with a single member
@@ -119,6 +120,7 @@ def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> l
     # returns an appropriately-altered gradient
     print("colour_helpers.refine_colourscheme")
     print(f"{colour_list=}, {colour_mode=}, {mode=}")
+    colour_list = list(set(colour_list))
     if colour_mode == "gradient":
         # limit to current length in settings - same for both modes
         current_state = state.get_state(db)

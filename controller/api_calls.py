@@ -102,7 +102,7 @@ def new_random_colour(db, song_id=None):
     colour_mode = current_state.ledfx_colour_mode
     max_colours = current_state.ledfx_max_colours
     colours = [colour_helpers.generate_random_hex_colour() for _ in range(max_colours)]    
-    colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
+    colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "song")
     state.update_state_colours(db, colourscheme)
     gradient = colour_helpers.create_gradient(colourscheme)
     output_effect = api_helpers.create_api_request_string(current_state.ledfx_type, gradient)
