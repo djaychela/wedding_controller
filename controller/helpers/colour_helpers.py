@@ -3,16 +3,14 @@ import math
 import json
 import re
 
-from random import randint, choice, shuffle
+from random import randint, choice, shuffle, uniform
 
 from ..crud import dancefloor, state, songs
 
 def generate_random_hex_colour() -> str:
     # returns a 6-digit hex colour in the format #AABBCC
-    r = hex(randint(127,255))[2:]
-    g = hex(randint(127,255))[2:]
-    b = hex(randint(127,255))[2:]
-    return f"#{r}{g}{b}"
+    candidates = ["#ff0000", "#00ff00", "#0000ff", "#fa9d00", "#ffff00", "#9370db", "#808080", "#00ffff", "#ff00ff"]	
+    return choice(candidates)
 
 def choose_random_colour(colour_list):
     # returns a single colour from a list, as a list with a single member
@@ -77,6 +75,10 @@ def create_gradient(colour_list, limit=6):
         colour_list = colour_list[:limit]
     if len(colour_list) == 0:
         colour_list = [generate_random_hex_colour()]
+    if len(colour_list) == 1:
+        # if a single colour, 50% chance of solid colour
+        if uniform(0,1) > 0.5:
+            return colour_list[0]
     increment = int(98 / len(colour_list))
     location = 0
     stem = "linear-gradient(90deg, rgb(0, 0, 0) 0%"
@@ -93,12 +95,13 @@ def create_colourscheme(db) -> list:
     song voters (first, but randomised in order)
     dancefloor members (in reverse order, newest first)
     returns a list of #AABBCC format colours """
-
+    print("create_colourscheme...")
     current_state = state.get_state(db)
     voter_colours = songs.get_song_colours(db, current_state.current_song_id, mode="list")
     if voter_colours == None:
         voter_colours = []
     shuffle(voter_colours)
+    print(f"{voter_colours=}")
     dancefloor_colours = dancefloor.get_dancefloor_colours(db, list_mode=True)
     # remove any duplication
     dancefloor_colours = [colour for colour in dancefloor_colours if colour not in voter_colours]
@@ -107,12 +110,15 @@ def create_colourscheme(db) -> list:
         # No votes, no-one on the dancefloor, so return a single random colour
         current_colours = [generate_random_hex_colour()]
     state.update_state_colours(db, current_colours)
+    print(f"{current_colours=}")
     return current_colours
 
 
 def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> list:
     # Takes a list of colours and a mode from an effect
     # returns an appropriately-altered gradient
+    print("colour_helpers.refine_colourscheme")
+    print(f"{colour_list=}, {colour_mode=}, {mode=}")
     if colour_mode == "gradient":
         # limit to current length in settings - same for both modes
         current_state = state.get_state(db)
@@ -137,6 +143,7 @@ def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> l
         else:
             colourscheme = dancefloor.get_last_n_dancers(db, True, 1)
         
+    print(f"Returning {colourscheme=}")
     return colourscheme
             
 def extract_gradient(gradient_string):

@@ -71,7 +71,7 @@ def api_for_new_song(db, song_id=None):
         colour_mode = random_effect.colour_mode
         max_colours = random_effect.max_colours        
         state.update_state_ledfx_colours(db, colour_mode, max_colours)
-        colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
+        colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "song")
         state.update_state_colours(db, colourscheme)
         gradient = colour_helpers.create_gradient(colourscheme)
         output_effect = api_helpers.create_api_request_string(random_effect.type, gradient)
