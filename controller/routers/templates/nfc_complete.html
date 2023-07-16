@@ -1,0 +1,25 @@
+<html>
+<head>
+    <title>NFC Complete</title>
+    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
+</head>
+<body>
+    <h1>User Details Updated:</h1>
+
+    <table>
+        <tr>
+            <th>User ID</th>
+            <td>{{ user.id }}</td>
+        </tr>
+        <tr>
+            <th>Username</th>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <th>NFC ID</th>
+            <td>{{ user.nfc_id }}</td>
+        </tr>
+    </table>
+    <a href="{{ url }}">Do another</a>
+</body>
+</html>

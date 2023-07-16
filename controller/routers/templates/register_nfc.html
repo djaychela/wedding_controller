@@ -1,0 +1,24 @@
+<html>
+<head>
+    <title>Register NFC</title>
+    <link href="{{ url_for('static', path='/styles.css') }}" rel="stylesheet">
+</head>
+<body>
+    <h1>User NFC Registration Page: </h1>
+    <form action="" method="post" class="form-example">
+    <label for="user_id">Select a User:</label>
+        <select name="user_id" id="user_id" class="form-example">
+            {% for user in user_list %}
+            <option value="{{ user.id }}"> {{ user.username }}</option>
+            {% endfor %}   
+        </select>
+        <div class="form-example">
+            <label for="nfc_id">NFC ID: </label>
+            <input type="text" name="nfc_id" id="nfc_id" required>
+        </div>
+        <div class="form-example">
+            <input type="submit" value="Register">
+        </div>
+    </form>
+</body>
+</html>
