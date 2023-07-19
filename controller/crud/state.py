@@ -39,6 +39,13 @@ def update_state_colours(db: Session, colours):
     current_state.colours = json.dumps(colours)
     db.commit()   
 
+def update_current_song_id(db: Session, current_song_id):
+    """ Takes a song id and updates the current state.  Returns the state"""
+    current_state = get_state(db)
+    current_state.current_song_id = current_song_id
+    db.commit()  
+    return current_state
+
 def get_current_effect(db: Session):
     current_state = get_state(db)
     effect = models.Effect()

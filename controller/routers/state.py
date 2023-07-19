@@ -52,3 +52,12 @@ def change_colour(db: Session = Depends(get_db)):
     api_calls.new_random_colour(db, current_state.current_song_id)
     # current_state = state.get_state(db)
     return current_state
+
+@router.get("/set_first_song")
+def set_first_song(db: Session = Depends(get_db)):
+    """Ensures the current state is set to the first dance song id"""
+    first_song_id = "2NVpYQqdraEcQwqT7GhUkh"
+    new_state = state.update_current_song_id(db, first_song_id)
+    api_calls.api_for_new_song(db, first_song_id)
+    return {"song_id": first_song_id}
+

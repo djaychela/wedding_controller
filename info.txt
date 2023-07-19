@@ -1,88 +1,10 @@
-Databases:
 
-Songs:
-
-ID
-Spotify ID
-Artist
-Title
-Voters (many/many)
-
-
-Users
-ID
-Name
-
-ledFX:
-
-
-State:
-Currently playing song
-    song name
-    song Artist
-    song spotify_id
-Ledfx status for current song - random or programmed
-Current ledFX status (complete json):
-    name = Column(String, index=True)
-    type = Column(String, index=True)
-    config = Column(JSON)
-People on dancefloor
-    list of IDs
-
-
-
-
-
-API:
-
-ledFX:
-POST - Virtual settings
-wled:
-POST - DMX Wristband Settings?
-POST - DMX Hired Lights Settings (or ledFX?)
-POST - DMX PAR Can Settings (or ledFX?)
-
-Status / Logic:
-/song/current/
-GET - Currently Playing Song (text format)
-/song/current_web/
-GET - Currently Playing Song (Web)
-/song/set
-POST - Currently Playing Song (from Mixxx)
-/status
-GET - Current Overall Status
-/dancefloor/entry
-POST - Dancefloor Entry - RETURNS name of dancer
-/dancefloor/exit
-POST - Dancefloor Exit - RETURNS name of dancer
-/ledfx/selector
-GET - ledFX Selection (Algo / Colours) (Web Page)
 
 {"effect": {"config": {"modulation_speed": 0.87, "gradient_roll": 0.0, "background_color": "#000000", "speed": 4.9, "brightness": 1.0, "background_brightness": 1.0, "modulate": true, "gradient": "#ff0101", "mirror": false, "flip": false, "blur": 0.0, "modulation_effect": "sine"}, "name": "Gradient", "type": "gradient"}}
 
 {"modulation_speed": 0.87, "gradient_roll": 0.0, "background_color": "#000000", "speed": 4.9, "brightness": 1.0, "background_brightness": 1.0, "modulate": true, "gradient": "#ff0101", "mirror": false, "flip": false, "blur": 0.0, "modulation_effect": "sine"}
 
 TODO:
-
-for currently playing song, list of associated Users' colours
-
-Dancefloor:
-in / out API endpoints
-poeple currently on the dancefloor
-removal after x songs?
-palette from those on dancefloor?
-
-DB:
-each entry is a user ID.
-
-lookup method to return colours, from list of IDS.
-
-Effect Table:
-name
-type
-colour type [single, adjacent, gradient]
-max_colours
-
 
 Network Setup:
 
@@ -106,20 +28,6 @@ Computers:
 192.168.1.51 - LEDFX PC
 192.168.1.52 - Music Laptop (tbd)
 
-
-
-
-idea:
-
-store current effect mode in state
-this would allow easy lookup for api calls to select appropriate new colours
-when entering / exiting dancefloor, and when new songs start up
-
-
-idea 2:
-
-voters stored in state (for easy access)?
-dancefloor already stored
 
 colours rationale:
 song change:
@@ -168,3 +76,12 @@ gradients to extract:
 
 linear-gradient(90deg, rgb(0, 0, 0) 0%, rgb(255, 204, 255) 98%)
 linear-gradient(90deg, #ff0000 0.00%,#ff7800 14.00%,#ffc800 28.00%,#00ff00 42.00%,#00c78c 56.00%,#0000ff 70.00%,#800080 84.00%,#ff00b2 98.00%)
+
+TODO:
+
+Presets for first 3 songs (nice and easy)
+Preset for first 3 songs wristbands
+Rich output for mixxx db viewer
+GET endpoints for other remote control actions?
+More effect choices from experiments (scroll, beats, etc)
+virtual-2 control for battery-controlled bands?

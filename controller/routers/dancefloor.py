@@ -7,7 +7,7 @@ import time
 
 from ..crud import crud
 
-from ..crud import dancefloor
+from ..crud import dancefloor, state
 
 from .. import models, schemas
 from .. import api_calls
@@ -18,6 +18,8 @@ from ..dependencies import get_db, led_fx_post
 from ..helpers import colour_helpers
 
 router = APIRouter(prefix="/dancefloor",)
+
+WRISTBANDS_DISABLED = ["2NVpYQqdraEcQwqT7GhUkh"]
 
 @router.get("/", response_model=schemas.DancefloorBase)
 def get_dancers(db: Session = Depends(get_db)):
@@ -67,12 +69,13 @@ def dancefloor_entry(dancer: schemas.DancefloorEntry, db: Session = Depends(get_
     """Adds dancer to dancefloor list.
     Returns info for the dancer who matches the NFC ID.
     Calls API to update colour palette with new dancer"""
+    current_state = state.get_state(db)
+    if current_state.current_song_id in WRISTBANDS_DISABLED:
+        # wristbands are disabled for the first song, so return the 'error' code.
+        return {"None": "None"}, {"status": 3}
     valid, present = dancefloor.add_dancer(dancer, db)
     if valid:
-        # dancer["present"] = 1
-        # change_ledfx_type(db=db)
         api_calls.dancefloor_entry_exit(db=db)
-        # api_calls.change_ledfx_type(db=db)
         dancer = dancefloor.get_user_by_nfc_id(db, dancer.dancer_nfc_id)
         return dancer, {"status": 0}
     elif present:

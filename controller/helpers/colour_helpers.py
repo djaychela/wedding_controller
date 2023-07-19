@@ -3,9 +3,13 @@ import math
 import json
 import re
 
+from rich.console import Console
+
 from random import randint, choice, shuffle, uniform
 
 from ..crud import dancefloor, state, songs
+
+console = Console()
 
 def generate_random_hex_colour() -> str:
     # returns a 6-digit hex colour in the format #AABBCC
@@ -96,13 +100,13 @@ def create_colourscheme(db) -> list:
     song voters (first, but randomised in order)
     dancefloor members (in reverse order, newest first)
     returns a list of #AABBCC format colours """
-    print("create_colourscheme...")
+    console.print("[bright_cyan]colour_helpers[/].[bold]create_colourscheme[/]")
     current_state = state.get_state(db)
     voter_colours = songs.get_song_colours(db, current_state.current_song_id, mode="list")
     if voter_colours == None:
         voter_colours = []
     shuffle(voter_colours)
-    print(f"{voter_colours=}")
+    console.print(f"{voter_colours=}")
     dancefloor_colours = dancefloor.get_dancefloor_colours(db, list_mode=True)
     # remove any duplication
     dancefloor_colours = [colour for colour in dancefloor_colours if colour not in voter_colours]
@@ -111,15 +115,15 @@ def create_colourscheme(db) -> list:
         # No votes, no-one on the dancefloor, so return a single random colour
         current_colours = [generate_random_hex_colour()]
     state.update_state_colours(db, current_colours)
-    print(f"{current_colours=}")
+    console.print(f"{current_colours=}")
     return current_colours
 
 
 def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> list:
     # Takes a list of colours and a mode from an effect
     # returns an appropriately-altered gradient
-    print("colour_helpers.refine_colourscheme")
-    print(f"{colour_list=}, {colour_mode=}, {mode=}")
+    console.print("[bright_cyan]colour_helpers[/].[bold]refine_colourscheme[/]")
+    console.print(f"{colour_list=}, {colour_mode=}, {mode=}")
     colour_list = list(set(colour_list))
     if colour_mode == "gradient":
         # limit to current length in settings - same for both modes
@@ -145,13 +149,12 @@ def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> l
         else:
             colourscheme = dancefloor.get_last_n_dancers(db, True, 1)
         
-    print(f"Returning {colourscheme=}")
+    console.print(f"Returning {colourscheme=}")
     return colourscheme
             
 def extract_gradient(gradient_string):
     """Takes a gradient string in rgb or hex value.
     Returns a list of hex values of colours."""
-    regexes = [r"(\d+),\s*(\d+),\s*(\d+)", r"#[A-Fa-f0-9]+"]
     rgb_matches = re.findall(r"(\d+),\s*(\d+),\s*(\d+)", gradient_string)
     hex_matches = [ convert_int_to_hex([int(x) for x in rgb]) for rgb in rgb_matches]
     hex_finds = re.findall(r"#[A-Fa-f0-9]+", gradient_string)
