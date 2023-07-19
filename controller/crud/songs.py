@@ -12,6 +12,13 @@ def get_songs(db: Session, skip: int = 0, limit: int = 100):
 def get_song(song_id: str, db: Session):
     return db.query(models.Song).filter(models.Song.track_id == song_id).first()
 
+def get_song_artist_title(db: Session, song_id: str):
+    song = db.query(models.Song).filter(models.Song.track_id == song_id).first()
+    if song:
+        return f"{song.artist} - {song.title}"
+    else:
+        return "Unknown Artist - Unknown Title"
+
 
 def get_song_colours(db: Session, song_id: str, mode="dict", strict=False):
     print("songs.get_song_colours...")

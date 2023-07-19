@@ -84,6 +84,7 @@ def wrist_bands_new_song(db, song_id):
 def api_for_new_song(db, song_id=None):
     # look up to see if preset exists for song.
     preset_effect = effects.get_effect_preset_by_song_id(db, song_id)
+    console.rule(f"[cyan]{songs.get_song_artist_title(db, song_id)}[/]")
     if preset_effect:
         # preset present, select output effect, colour type and max colours
         console.rule(f"[bold green]:light_bulb: Loading Preset! :light_bulb:[/]\n")
