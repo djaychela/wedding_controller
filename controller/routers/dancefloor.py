@@ -92,7 +92,10 @@ def dancefloor_exit(dancer: schemas.DancefloorEntry, db: Session = Depends(get_d
     valid, present = dancefloor.remove_dancer(dancer, db)
     if present:
         api_calls.dancefloor_entry_exit(db=db)
-        return {"colour": valid.colour}, {"status": 2}
+        if valid:
+            return {"colour": valid.colour}, {"status": 2}
+        else:
+            return {"colour": "#000000"}, {"status": 2}
     else:
         return {"None": "None"}, {"status": 3}
     

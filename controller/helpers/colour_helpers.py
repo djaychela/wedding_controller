@@ -15,6 +15,7 @@ def generate_random_hex_colour() -> str:
     # returns a 6-digit hex colour in the format #AABBCC
     candidates = ["#ff0000", "#00ff00", "#0000ff", "#fa9d00", "#ffff00", "#9370db", "#808080", "#00ffff", "#ff00ff"]	
     colour = choice(candidates)
+    console.print(f"Random Colour: {colour}")
     return colour
 
 def choose_random_colour(colour_list):

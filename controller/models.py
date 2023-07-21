@@ -47,6 +47,7 @@ class Effect(Base):
     type = Column(String, index=True)
     colour_mode = Column(String, index=True)
     max_colours = Column(Integer)
+    config = Column(JSON)
 
 class EffectPreset(Base):
     __tablename__ = "effect_preset_table"

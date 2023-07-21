@@ -27,3 +27,7 @@ def get_random_effect_preset(db: Session):
 
 def get_effect_preset_by_song_id(db: Session, song_id: str):
     return db.query(models.EffectPreset).filter(models.EffectPreset.song_id == song_id).first()
+
+def get_effect_string_by_id(db: Session, effect_id: str):
+    effect = db.query(models.Effect).filter(models.Effect.id == effect_id).first()
+    return effect.config
