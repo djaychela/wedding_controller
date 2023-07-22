@@ -79,6 +79,7 @@ class State(Base):
     bands_config = Column(JSON)
     bands_colour_mode = Column(String, index=True)
     bands_max_colours = Column(Integer)
+    effect_id = Column(Integer)
     
 
 class Dancefloor(Base):

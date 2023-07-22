@@ -91,6 +91,9 @@ def api_for_new_song(db, song_id=None):
         console.print(f"{api_request_1=}")
         colour_mode = preset_effect.colour_mode
         max_colours = preset_effect.max_colours
+        # find matching effect to set id for updates
+        matching_effect = effects.find_effect_match(db, preset_effect.type, colour_mode, max_colours)
+        state.update_effect_id(db, matching_effect.id)
         # update state.colours from preset
         gradient = api_request_1["config"]["gradient"]
         preset_colours = colour_helpers.extract_gradient(gradient)
@@ -104,6 +107,7 @@ def api_for_new_song(db, song_id=None):
         console.rule(f"[bold green]:shuffle_tracks_button: Creating Effect :shuffle_tracks_button:[/]\n")
         num_votes = songs.get_song_votes(db, song_id)
         random_effect = effects.get_random_effect(db, num_votes)
+        state.update_effect_id(db, random_effect.id)
         console.print(f"Effect Chosen: {random_effect.type}")
         colours = colour_helpers.create_colourscheme(db)
         colour_mode = random_effect.colour_mode
@@ -124,6 +128,7 @@ def new_random_effect(db, song_id=None):
     console.rule(f"[bold green]:light_bulb: New Random Effect :light_bulb:[/]\n")
     num_votes = songs.get_song_votes(db, song_id)
     random_effect = effects.get_random_effect(db, num_votes)
+    state.update_effect_id(db, random_effect.id)
     console.print(f"Effect Chosen: {random_effect.type}")
     colours = colour_helpers.create_colourscheme(db)
     colour_mode = random_effect.colour_mode

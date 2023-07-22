@@ -54,4 +54,10 @@ def get_current_effect(db: Session):
     effect.config = current_state.ledfx_config
     return effect
 
+def update_effect_id(db: Session, effect_id: int):
+    """ Takes an effect id and updates the current state.  Returns the state"""
+    current_state = get_state(db)
+    current_state.effect_id = effect_id
+    db.commit()
+    return current_state
 

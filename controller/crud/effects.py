@@ -3,6 +3,8 @@ from sqlalchemy.sql import func
 
 from .. import models, schemas
 
+NEVER_CHOOSE_EFFECTS_TYPE = ["gradient"]
+
 def create_effect(db: Session, effect: schemas.EffectPresetCreate):
     db_effect = models.EffectPreset(**effect.dict())
     db.add(db_effect)
@@ -20,7 +22,10 @@ def get_effect_by_id(db: Session, effect_id: int):
     return db.query(models.EffectPreset).filter(models.EffectPreset.id == effect_id).first()
 
 def get_random_effect(db: Session, max_colours):
-    return db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).order_by(func.random()).first()
+    random_effect = db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).order_by(func.random()).first()
+    while random_effect.type in NEVER_CHOOSE_EFFECTS_TYPE:
+        random_effect = db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).order_by(func.random()).first()
+    return random_effect
 
 def get_random_effect_preset(db: Session):
     return db.query(models.EffectPreset).order_by(func.random()).first()
@@ -31,3 +36,14 @@ def get_effect_preset_by_song_id(db: Session, song_id: str):
 def get_effect_string_by_id(db: Session, effect_id: str):
     effect = db.query(models.Effect).filter(models.Effect.id == effect_id).first()
     return effect.config
+
+def find_effect_match(db: Session, type: str, colour_mode: str, max_colours: int):
+    effect = db.query(models.Effect).filter(models.Effect.type == type).filter(models.Effect.colour_mode == colour_mode).filter(models.Effect.max_colours == max_colours).first()
+    if not effect:
+        effect = db.query(models.Effect).filter(models.Effect.type == type).filter(models.Effect.colour_mode == colour_mode).first()
+    if not effect:
+        effect = db.query(models.Effect).filter(models.Effect.type == type).first()
+    if effect:
+        return effect
+    else:
+        return None
