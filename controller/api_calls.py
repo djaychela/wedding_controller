@@ -66,8 +66,8 @@ def bands_slow_songs(db, song_id=None):
     console.rule(f"[bold green]:light_bulb: Bands for Slow Songs :light_bulb:[/]\n")
     current_state = state.get_state(db)
     colourscheme = json.loads(current_state.colours)
-    
-    data = api_helpers.create_api_request_string(db, "bands_slow", colourscheme)
+    bands_slow = f"bands_slow_{SPECIAL_SONGS.index(song_id)}"
+    data = api_helpers.create_api_request_string(db, bands_slow, colourscheme)
     api_helpers.perform_api_call(db, data, mode="bands")
 
 def wrist_bands_new_song(db, song_id):
