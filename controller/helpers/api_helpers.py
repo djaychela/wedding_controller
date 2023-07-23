@@ -1,6 +1,8 @@
 import json
 import requests
 
+import copy
+
 from rich.console import Console
 
 from ..crud import state, effects
@@ -14,7 +16,7 @@ STICKS_2_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-2/effects
 BANDS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/wled-bands/effects"
 DMX_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-dmx/effects"
 WLED_BANDS_API_ENDPOINT = "http://192.168.1.33/json"
-MODE = "run"
+MODE = "test"
 
 console = Console()
 
@@ -43,7 +45,8 @@ def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_
     if effect_id is not None:
         # console.print(f"Effect ID: {effect_id}")
         # console.print(f"Colourscheme: {colourscheme}")
-        effect_config = effects.get_effect_string_by_id(db, effect_id)
+        effect_config = copy.deepcopy(effects.get_effect_string_by_id(db, effect_id))
+        # console.print(f"{id(effect_config)=}")
         # console.print(f"Effect Config: {effect_config}")
         index = list(effect_config['config'].values())
         gradient_indices = [i for i, x in enumerate(index) if x == "#GGGGGG"]
