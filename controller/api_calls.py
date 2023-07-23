@@ -88,7 +88,7 @@ def api_for_new_song(db, song_id=None):
         # preset present, select output effect, colour type and max colours
         console.rule(f"[bold green]:light_bulb: Loading Preset! :light_bulb:[/]\n")
         api_request_1 = preset_effect.config['effect']
-        console.print(f"{api_request_1=}")
+        # console.print(f"{api_request_1=}")
         colour_mode = preset_effect.colour_mode
         max_colours = preset_effect.max_colours
         # find matching effect to set id for updates

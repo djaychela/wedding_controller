@@ -14,7 +14,7 @@ STICKS_2_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-2/effects
 BANDS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/wled-bands/effects"
 DMX_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-dmx/effects"
 WLED_BANDS_API_ENDPOINT = "http://192.168.1.33/json"
-MODE = "test"
+MODE = "run"
 
 console = Console()
 
@@ -41,8 +41,8 @@ def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_
     gradient = colour_helpers.create_gradient(colourscheme)
 
     if effect_id is not None:
-        console.print(f"Effect ID: {effect_id}")
-        console.print(f"Colourscheme: {colourscheme}")
+        # console.print(f"Effect ID: {effect_id}")
+        # console.print(f"Colourscheme: {colourscheme}")
         effect_config = effects.get_effect_string_by_id(db, effect_id)
         # console.print(f"Effect Config: {effect_config}")
         index = list(effect_config['config'].values())
@@ -51,12 +51,12 @@ def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_
         # console.print(f"Gradient Indices: {gradient_indices}")
         # console.print(f"Other Indices:    {other_indices}")
         if gradient_indices:
-            console.print(f"Keys: {[list(effect_config['config'].keys())[g] for g in gradient_indices]}")
+            # console.print(f"Keys: {[list(effect_config['config'].keys())[g] for g in gradient_indices]}")
             for key in [list(effect_config['config'].keys())[g] for g in gradient_indices]:
                 # console.print(f"Replacing {key}")
                 effect_config['config'][key] = gradient
         if other_indices:
-            console.print(f"Keys: {[list(effect_config['config'].keys())[o] for o in other_indices]}")
+            # console.print(f"Keys: {[list(effect_config['config'].keys())[o] for o in other_indices]}")
             for idx, key in enumerate([list(effect_config['config'].keys())[o] for o in other_indices]):
                 # console.print(f"Replacing {key}")
                 try:
@@ -66,7 +66,7 @@ def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_
         if sticks_2:
             effect_config['config']['band_count'] = 2
             effect_config['config']['gradient_repeat'] = 2
-        console.print(f"Final Effect Config: {effect_config}")
+        # console.print(f"Final Effect Config: {effect_config}")
 
         return effect_config
 
