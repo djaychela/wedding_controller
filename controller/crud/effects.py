@@ -3,6 +3,8 @@ from sqlalchemy.sql import func
 
 from .. import models, schemas
 
+from . import state
+
 NEVER_CHOOSE_EFFECTS_TYPE = ["gradient"]
 
 def create_effect(db: Session, effect: schemas.EffectPresetCreate):
@@ -22,9 +24,11 @@ def get_effect_by_id(db: Session, effect_id: int):
     return db.query(models.EffectPreset).filter(models.EffectPreset.id == effect_id).first()
 
 def get_random_effect(db: Session, max_colours):
-    random_effect = db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).order_by(func.random()).first()
+    current_state = state.get_state(db)
+    current_effect_id = current_state.effect_id
+    random_effect = db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).filter(models.Effect.id != current_effect_id).order_by(func.random()).first()
     while random_effect.type in NEVER_CHOOSE_EFFECTS_TYPE:
-        random_effect = db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).order_by(func.random()).first()
+        random_effect = db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).filter(models.Effect.id != current_effect_id).order_by(func.random()).first()
     return random_effect
 
 def get_random_effect_preset(db: Session):

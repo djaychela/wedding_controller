@@ -16,7 +16,7 @@ STICKS_2_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-2/effects
 BANDS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/wled-bands/effects"
 DMX_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-dmx/effects"
 WLED_BANDS_API_ENDPOINT = "http://192.168.1.33/json"
-MODE = "test"
+MODE = "run"
 
 console = Console()
 
@@ -83,7 +83,6 @@ def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_
         data = {"config": {"gradient": gradient, "gradient_roll": 0.1, "modulation_effect": "sine", "modulate": True, "blur": 0.0, "modulation_speed": 1, "speed": 0.5, "mirror": False, "flip": False, "brightness": 1.0, "background_brightness": 1.0, "background_color": "#000000"}, "name": "Gradient", "type": "gradient"}
     elif fx_type == "bands_slow_2":
         data = {"config": {"background_brightness": 1.0, "background_color": "#000000", "beat_decay": 1.0, "blur": 0.0, "brightness": 1.0, "flip": False, "gradient": "#ff0000", "gradient_roll": 0.0, "mirror": False, "strobe_decay": 1.5, "strobe_frequency": "1/1 (.,. )"}, "name": "BPM Strobe", "type": "strobe"}
-
     else:
         # safe fallback in case something has been missed when adding specific lookups above.
         if sticks_2:
