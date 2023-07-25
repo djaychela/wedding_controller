@@ -79,9 +79,11 @@ linear-gradient(90deg, #ff0000 0.00%,#ff7800 14.00%,#ffc800 28.00%,#00ff00 42.00
 
 TODO:
 
-Presets for first 3 songs (nice and easy)
-Preset for first 3 songs wristbands
-Rich output for mixxx db viewer
+DONE - Presets for first 3 songs (nice and easy)
+DONE - Preset for first 3 songs wristbands
+DONE - Rich output for mixxx db viewer
 GET endpoints for other remote control actions?
-More effect choices from experiments (scroll, beats, etc)
-virtual-2 control for battery-controlled bands?
+DONE - More effect choices from experiments (scroll, beats, etc)
+DONE - virtual-2 control for battery-controlled bands?
+End of evening fade out after last song finishes
+Start of evening - black output to bands and sticks (so that there's darkness before the first song starts)
