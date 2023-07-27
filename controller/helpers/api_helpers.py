@@ -32,13 +32,13 @@ def update_state_from_response(db, response, mode):
         state.update_state_bands(db, new_effect_preset)
 
 
-def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_2=False):
+def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_2=False, flash=False):
     """Looks up a config from the database for the current effect id if provided, and
     substitutes sentinel values for the colourscheme / gradient where appropriate.
     If effect_id is not provided, then hard-coded dictionaries have values replaced in them, and are
     returned instead."""
 
-    gradient = colour_helpers.create_gradient(colourscheme)
+    gradient = colour_helpers.create_gradient(colourscheme, flash=flash)
 
     if effect_id is not None:
         # console.print(f"Effect ID: {effect_id}")
@@ -75,12 +75,12 @@ def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_
     if fx_type =="bands":
         data = {"config": {"background_brightness": 1.0, "background_color": "#000000", "beat_decay": 1.0, "blur": 0.0, "brightness": 1.0, "flip": False, "gradient": gradient, "gradient_roll": 0.0, "mirror": False, "strobe_decay": 1.5, "strobe_frequency": "1/4 (.o. )"}, "name": "BPM Strobe", "type": "strobe"}
     elif fx_type == "bands_flash":
-        data = {"config": {"gradient": gradient, "gradient_roll": 0.1, "modulation_effect": "sine", "modulate": True, "blur": 0.0, "modulation_speed": 1, "speed": 2.7, "mirror": False, "flip": False, "brightness": 1.0, "background_brightness": 1.0, "background_color": "#000000"}, "name": "Gradient", "type": "gradient"}
+        data = {"config": {"gradient": gradient, "gradient_roll": 0.2, "modulation_effect": "sine", "modulate": False, "blur": 0.0, "modulation_speed": 1.0, "speed": 2.7, "mirror": False, "flip": False, "brightness": 1.0, "background_brightness": 1.0, "background_color": "#000000"}, "name": "Gradient", "type": "gradient"}
     # bands special cases for first three songs
     elif fx_type == "bands_slow_0":
-        data = {"config": {"background_brightness": 1.0, "background_color": "#000000", "blur": 4.5, "brightness": 1.0, "flip": True, "gradient_name": "Dancefloor", "solid_color": False, "gradient": "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 0, 178) 50%, rgb(0, 0, 255) 100%)", "gradient_repeat": 1, "gradient_roll": 1.0, "mirror": False, "speed": 4.9}, "name": "Fade", "type": "fade"}
+        data = {"config": {"background_brightness": 1.0, "background_color": "#000000", "blur": 4.5, "brightness": 1.0, "flip": True, "gradient_name": "Dancefloor", "solid_color": False, "gradient": "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(0, 0, 255) 50%, rgb(255, 0, 0) 100%)", "gradient_repeat": 1, "gradient_roll": 1.0, "mirror": False, "speed": 4.9}, "name": "Fade", "type": "fade"}
     elif fx_type == "bands_slow_1":
-        data = {"config": {"gradient": gradient, "gradient_roll": 0.1, "modulation_effect": "sine", "modulate": True, "blur": 0.0, "modulation_speed": 1, "speed": 0.5, "mirror": False, "flip": False, "brightness": 1.0, "background_brightness": 1.0, "background_color": "#000000"}, "name": "Gradient", "type": "gradient"}
+        data = {"config": {"gradient": "linear-gradient(90deg, rgb(255, 0, 0) 0%, rgb(255, 0, 255) 25%, rgb(0, 0, 255) 50%, rgb(255, 0, 255) 75%, rgb(255, 0, 0) 100%)", "gradient_roll": 0.4, "modulation_effect": "sine", "modulate": False, "blur": 0.0, "modulation_speed": 1.0, "speed": 0.5, "mirror": False, "flip": False, "brightness": 1.0, "background_brightness": 1.0, "background_color": "#000000"}, "name": "Gradient", "type": "gradient"}
     elif fx_type == "bands_slow_2":
         data = {"config": {"background_brightness": 1.0, "background_color": "#000000", "beat_decay": 1.0, "blur": 0.0, "brightness": 1.0, "flip": False, "gradient": "#ff0000", "gradient_roll": 0.0, "mirror": False, "strobe_decay": 1.5, "strobe_frequency": "1/1 (.,. )"}, "name": "BPM Strobe", "type": "strobe"}
     else:

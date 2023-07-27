@@ -58,7 +58,7 @@ def flash_bands(db, song_id=None):
         bands_current_song(db, "instant")
         return
     
-    data = api_helpers.create_api_request_string(db, "bands_flash", song_colours)
+    data = api_helpers.create_api_request_string(db, "bands_flash", song_colours, flash=True)
     api_helpers.perform_api_call(db, data, mode="bands")
 
 def bands_slow_songs(db, song_id=None):
@@ -78,6 +78,7 @@ def wrist_bands_new_song(db, song_id):
         # perform both calls for wrist band.  Second call is delayed.
         executor = ThreadPoolExecutor(max_workers=3)
         executor.submit(flash_bands(db, song_id))
+        # TODO:  RE-ENABLE THIS!!!
         executor.submit(bands_current_song(db, timing="delayed"))
 
 def api_for_new_song(db, song_id=None):

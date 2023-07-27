@@ -61,3 +61,10 @@ def set_first_song(db: Session = Depends(get_db)):
     api_calls.api_for_new_song(db, first_song_id)
     return {"song_id": first_song_id}
 
+@router.get("/set_darkness")
+def set_darkness(db: Session = Depends(get_db)):
+    """Ensures the current state is set to a song with black as the output"""
+    darkness_id = "1234567890abcdef"
+    new_state = state.update_current_song_id(db, darkness_id)
+    api_calls.api_for_new_song(db, darkness_id)
+    return {"song_id": "darkness"}

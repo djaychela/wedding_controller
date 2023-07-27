@@ -70,7 +70,7 @@ def sort_colour_list(colour_list):
 
     return colour_list_hex
 
-def create_gradient(colour_list, limit=6):
+def create_gradient(colour_list, limit=6, flash=False):
     """takes a list of hex-format colours, and outputs
     a linear gradient for ledfx based on the colour list.
     if there are more than limit entries, only a random selection
@@ -85,6 +85,11 @@ def create_gradient(colour_list, limit=6):
         # if a single colour, 50% chance of solid colour
         if uniform(0,1) > 0.5:
             return colour_list[0]
+    # modify list for flashing
+    if flash:
+        # insert #000000 at every other index
+        colours = [[colour, "#000000"] for colour in colour_list]
+        colour_list = [item for sublist in colours for item in sublist]
     increment = int(98 / len(colour_list))
     location = 0
     stem = "linear-gradient(90deg, rgb(0, 0, 0) 0%"
