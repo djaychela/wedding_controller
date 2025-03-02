@@ -59,7 +59,6 @@ To get this up and running all on the same system, just change the IP addresses 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 ### Built With
 
 * [LedFX](https://github.com/LedFx/LedFx)
@@ -70,7 +69,6 @@ To get this up and running all on the same system, just change the IP addresses 
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- GETTING STARTED -->
@@ -101,16 +99,23 @@ _Below is an example of how you can instruct your audience on installing and set
    ```sh
    python -m pip install -r requirements.txt
    ```
-4. Change the API endpoints appropriately in `controller/helpers/api_helpers.py` and `controller/api_calls.py` - for instance for a setup with LedFX running on the same machine as the wedding controller:
+4. Change the `API_BASE_URL` constant appropriately in `controller/helpers/api_helpers.py`  - for instance for a setup with LedFX running on the same machine as the wedding controller (the default), but if you have it on another machine then this would need to change, such as here (for the original setup where it was on another machine with the IP address seen)
    ```python
-   API_ENDPOINT = "http://127.0.0.1:8888/api/virtuals/virtual-1/effects";
+   API_BASE_URL = "http://192.168.1.51:8888"
    ```
-5. Run the Wedding Controller.  You can do this with Uvicorn or similar, but for testing the FastAPI server will do:
+5. Set the `STICKS`, `STICKS_2` and `BANDS` constants in `controller/helpers/api_calls.py` to suit your setup (see below for more on this):
+   ```python
+   STICKS = True
+   STICKS_2 = False
+   BANDS = False
+   ```
+
+6. Run the Wedding Controller.  You can do this with Uvicorn or similar, but for testing the FastAPI server will do:
 
    ```sh
    fastapi dev controller/main.py 
    ```
-6. Endpoints defined are now accessible, such as
+7. Endpoints defined are now accessible in a browser, such as
 
     ```
     http://127.0.0.1:8000/state/change_effect
@@ -120,27 +125,12 @@ _Below is an example of how you can instruct your audience on installing and set
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-To set this up locally, change all API endpoints to point at `127.0.0.1`, and set up a virtual in LedFX, called virtual-1.  
+To set this up locally, ensure that `API_BASE_URL` is set to point at `127.0.0.1:8888`, and set up a virtual in LedFX, called virtual-1.  
 
-You will need to disable the calls to the other virtual and also to the 'bands' - these were radio-controlled wristbands whose colour could be set via an API call to an ESP8266 which converted the call to DMX to control the bands.  This is done by commenting out the API calls in `api_calls.py` - such as in `def new_random_effect():`:
-
-```python
-    def new_random_effect(db, song_id=None):
-
-        ...
-
-    api_request_2 = api_helpers.create_api_request_string(db, random_effect.type, colourscheme, random_effect.id, sticks_2=True)
-    # api_helpers.perform_api_call(db, api_request_2, "sticks_2")
-
-    # bands_current_song(db, "instant")
-
-```
-
-Doing this here and in `def new_random_colour()` enabled the system with a single virtual to run, as I now have it set up at home.  If you have the full system setup (and it is communicating with Mixxx or similar) then the other api calls will need to be modified, but the functions are sensibly named so it's easy to isolate which calls need to be commented out or removed.  I never got round to doing config flags for the presence of these, so consider that a project you can do if you need to!
+You will need to disable the calls to the other virtual and also to the 'bands' - these were radio-controlled wristbands whose colour could be set via an API call to an ESP8266 which converted the call to DMX to control the bands.  This is done by setting the constants at the top of `api_calls.py` - `STICKS`, `STICKS_2` and `BANDS` - which are tested before making the API calls.  For my own home setup, `STICKS_2` (which were two battery powered lights) and `BANDS` (the DMX-radio-controlled wristbands) are disabled by setting them to False.  Failing to disable these when they are not present will mean FastAPI will eventually throw an error when the API call is unanswered.
 
 System can be [seen running here](https://photos.app.goo.gl/MPWkFfHzNgioq3M98)
 
@@ -165,14 +155,12 @@ As a result, contributions are not open!  Feel free to fork the project and work
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- LICENSE -->
 ## License
 
 Distributed under the Unlicense License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- ACKNOWLEDGMENTS -->

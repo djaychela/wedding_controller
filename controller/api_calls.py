@@ -12,11 +12,13 @@ from .crud import state, effects, songs
 
 from .helpers import colour_helpers, api_helpers, bands_helpers
 
-API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
-
 SPECIAL_SONGS = ["2NVpYQqdraEcQwqT7GhUkh", "6LNdC4inw5abVNMQ1YUHN6", "63xdwScd1Ai1GigAwQxE8y"]
 
 WRISTBANDS_DISABLED = ["2NVpYQqdraEcQwqT7GhUkh"]
+
+STICKS = True
+STICKS_2 = False
+BANDS = False
 
 console = Console()
 
@@ -120,9 +122,12 @@ def api_for_new_song(db, song_id=None):
         api_request_1 = api_helpers.create_api_request_string(db, random_effect.type, colourscheme, random_effect.id)
         api_request_2 = api_helpers.create_api_request_string(db, random_effect.type, colourscheme, random_effect.id, sticks_2=True)
 
-    api_helpers.perform_api_call(db, api_request_1, "sticks")
-    api_helpers.perform_api_call(db, api_request_2, "sticks_2")
-    wrist_bands_new_song(db, song_id)
+    if STICKS:
+        api_helpers.perform_api_call(db, api_request_1, "sticks")
+    if STICKS_2:
+        api_helpers.perform_api_call(db, api_request_2, "sticks_2")
+    if BANDS:
+        wrist_bands_new_song(db, song_id)
     return api_request_1
 
 def new_random_effect(db, song_id=None):
@@ -139,12 +144,15 @@ def new_random_effect(db, song_id=None):
     state.update_state_colours(db, colourscheme)
     
     api_request_1 = api_helpers.create_api_request_string(db, random_effect.type, colourscheme, random_effect.id)
-    api_helpers.perform_api_call(db, api_request_1, "sticks")
+    if STICKS:
+        api_helpers.perform_api_call(db, api_request_1, "sticks")
 
     api_request_2 = api_helpers.create_api_request_string(db, random_effect.type, colourscheme, random_effect.id, sticks_2=True)
-    api_helpers.perform_api_call(db, api_request_2, "sticks_2")
+    if STICKS_2:
+        api_helpers.perform_api_call(db, api_request_2, "sticks_2")
 
-    bands_current_song(db, "instant")
+    if BANDS:
+        bands_current_song(db, "instant")
     return api_request_1
 
 
@@ -158,12 +166,16 @@ def new_random_colour(db, song_id=None):
     state.update_state_colours(db, colourscheme)
     
     api_request_1 = api_helpers.create_api_request_string(db, current_state.ledfx_type, colourscheme)
-    api_helpers.perform_api_call(db, api_request_1, "sticks")
+    if STICKS:
+        api_helpers.perform_api_call(db, api_request_1, "sticks")
 
     api_request_2 = api_helpers.create_api_request_string(db, current_state.ledfx_type, colourscheme, sticks_2=True)
-    api_helpers.perform_api_call(db, api_request_2, "sticks_2")
+    if STICKS_2:
+        api_helpers.perform_api_call(db, api_request_2, "sticks_2")
 
-    bands_current_song(db, "instant")
+    if BANDS:
+        bands_current_song(db, "instant")
+    
     return api_request_1
 
 

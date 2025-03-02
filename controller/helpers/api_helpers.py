@@ -11,10 +11,12 @@ from ..models import EffectPreset, State
 
 from . import colour_helpers
 
-STICKS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-1/effects"
-STICKS_2_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-2/effects"
-BANDS_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/wled-bands/effects"
-DMX_API_ENDPOINT = "http://192.168.1.51:8888/api/virtuals/virtual-dmx/effects"
+API_BASE_URL = "http://127.0.0.1:8888"
+
+STICKS_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/virtual-1/effects"
+STICKS_2_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/virtual-2/effects"
+BANDS_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/wled-bands/effects"
+DMX_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/virtual-dmx/effects"
 WLED_BANDS_API_ENDPOINT = "http://192.168.1.33/json"
 MODE = "run"
 
