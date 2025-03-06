@@ -19,7 +19,7 @@ class Song(SongBase):
     duration: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserBase(BaseModel):
     username: str
@@ -44,14 +44,14 @@ class User(UserBase):
     nfc_id: str | None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class GradientBase(BaseModel):
     gradient: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class Gradient(GradientBase):
     gradient: str
@@ -67,7 +67,7 @@ class EffectBase(BaseModel):
     max_colours: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class EffectPresetBase(BaseModel):
     song_id: str
@@ -76,7 +76,7 @@ class EffectPresetBase(BaseModel):
     config: Optional[dict]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class EffectPresetCreate(EffectPresetBase):
     song_id: str
@@ -86,18 +86,18 @@ class EffectPresetCreate(EffectPresetBase):
     
                      
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class EffectPreset(EffectPresetBase):
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class EffectPresetSelect(BaseModel):
     name: str
     type: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class StateBase(BaseModel):
@@ -118,7 +118,7 @@ class StateBase(BaseModel):
     colours: Optional[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class StateLedFxUpdate(BaseModel):
 
@@ -127,7 +127,7 @@ class StateLedFxUpdate(BaseModel):
     ledfx_config: Optional[dict]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class StateLedFxUpdateColours(BaseModel):
 
@@ -135,7 +135,7 @@ class StateLedFxUpdateColours(BaseModel):
     ledfx_max_colours: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class StateSetSong(BaseModel):
     current_song_id: str
@@ -147,13 +147,13 @@ class DancefloorBase(BaseModel):
     dancer_id: Optional[int]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class DancefloorList(BaseModel):
     data: List[DancefloorBase]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class DancefloorColourBase(BaseModel):
     dancer_colour: Optional[str]
@@ -162,7 +162,7 @@ class DancefloorColourList(BaseModel):
     dancer_colour: List[DancefloorColourBase] | None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class DancefloorEntry(BaseModel):
     # id: int

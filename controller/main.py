@@ -4,7 +4,7 @@ from fastapi.openapi.docs import get_swagger_ui_html
 from . import models
 from .database import engine
 
-from .routers import users, songs, gradients, effects, ledfx, state, dancefloor
+from .routers import users, songs, gradients, effects, ledfx, state, dancefloor, html
 
 from os import path
 import pathlib
@@ -34,4 +34,4 @@ app.include_router(effects.router)
 app.include_router(ledfx.router)
 app.include_router(state.router)
 app.include_router(dancefloor.router)
-
+app.include_router(html.router)

@@ -3,6 +3,7 @@ import json
 import copy
 
 from concurrent.futures import ThreadPoolExecutor
+from random import randint
 
 from rich import print
 
@@ -19,6 +20,8 @@ WRISTBANDS_DISABLED = ["2NVpYQqdraEcQwqT7GhUkh"]
 STICKS = True
 STICKS_2 = False
 BANDS = False
+
+STANDALONE = True # True when not running with song database and changes
 
 console = Console()
 
@@ -132,16 +135,23 @@ def api_for_new_song(db, song_id=None):
 
 def new_random_effect(db, song_id=None):
     console.rule(f"[bold green]:light_bulb: New Random Effect :light_bulb:[/]\n")
-    num_votes = songs.get_song_votes(db, song_id)
+    if not STANDALONE:
+        num_votes = songs.get_song_votes(db, song_id)
+    else:
+        # There are no votes, so choose a decent number of colours (otherwise you end up 1)
+        num_votes = 6
     random_effect = effects.get_random_effect(db, num_votes)
     state.update_effect_id(db, random_effect.id)
     console.print(f"Effect Chosen: {random_effect.type}")
-    colours = colour_helpers.create_colourscheme(db)
-    colour_mode = random_effect.colour_mode
-    max_colours = random_effect.max_colours
-    state.update_state_ledfx_colours(db, colour_mode, max_colours)    
-    colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
-    state.update_state_colours(db, colourscheme)
+    if not STANDALONE:
+        colours = colour_helpers.create_colourscheme(db)
+        colour_mode = random_effect.colour_mode
+        max_colours = random_effect.max_colours
+        state.update_state_ledfx_colours(db, colour_mode, max_colours)    
+        colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "floor")
+        state.update_state_colours(db, colourscheme)
+    else:
+        colourscheme = new_random_colour_standalone(db)
     
     api_request_1 = api_helpers.create_api_request_string(db, random_effect.type, colourscheme, random_effect.id)
     if STICKS:
@@ -178,4 +188,14 @@ def new_random_colour(db, song_id=None):
     
     return api_request_1
 
+def new_random_colour_standalone(db, song_id=None):
+    console.rule(f"[bold green]:light_bulb: New Random Colour :light_bulb:[/]\n")
+    current_state = state.get_state(db)
+    colour_mode = current_state.ledfx_colour_mode
+    max_colours = current_state.ledfx_max_colours
+    max_colours = randint(1, max_colours) # Provide variety!
+    colours = [colour_helpers.generate_random_hex_colour() for _ in range(max_colours)]    
+    colourscheme = colour_helpers.refine_colourscheme(db, colours, colour_mode, "song")
+    state.update_state_colours(db, colourscheme)
 
+    return colourscheme

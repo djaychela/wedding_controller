@@ -11,7 +11,7 @@ from ..models import EffectPreset, State
 
 from . import colour_helpers
 
-API_BASE_URL = "http://127.0.0.1:8888"
+API_BASE_URL = "http://192.168.1.238:8888"
 
 STICKS_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/virtual-1/effects"
 STICKS_2_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/virtual-2/effects"
