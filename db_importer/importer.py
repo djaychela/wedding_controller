@@ -1,11 +1,6 @@
-from pprint import pprint
 from random import choices
 
-import json
-
 from sqlalchemy.orm import Session
-
-from sqlalchemy import exc
 
 from models_imp import (
     DbVotes,

@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..crud import crud
+from .. crud import crud
 
 from .. import schemas, state
-from ..database import SessionLocal, engine
-from ..dependencies import get_db, led_fx_post, create_gradient
+from .. dependencies import get_db, led_fx_post, create_gradient
 
 router = APIRouter(prefix="/ledfx")
 

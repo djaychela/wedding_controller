@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import func
 
-from .. import models, schemas
+from .. import models
 
 from ..helpers import colour_helpers
 

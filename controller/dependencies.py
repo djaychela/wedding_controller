@@ -1,20 +1,14 @@
 import json, colorsys
 
-from random import randrange
-
-from fastapi import Depends
-
-from random import shuffle
+from random import randrange, shuffle
 
 from sqlalchemy.orm import Session
-
-from .database import SessionLocal
 from requests import post
-from .state import update_ledfx_state
 
-from .crud import gradients
+from . database import SessionLocal
+from . state import update_ledfx_state
 
-from .helpers import colour_helpers
+from . helpers import colour_helpers
 
 
 def get_db():

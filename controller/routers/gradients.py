@@ -1,13 +1,10 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..crud import crud
-
-from ..crud import gradients, dancefloor
+from .. crud import gradients, dancefloor
 
 from .. import schemas
-from ..database import SessionLocal, engine
-from ..dependencies import get_db, create_gradient
+from .. dependencies import get_db, create_gradient
 
 router = APIRouter(prefix="/gradients")
 

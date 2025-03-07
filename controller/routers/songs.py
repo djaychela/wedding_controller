@@ -1,12 +1,11 @@
-from fastapi import APIRouter, Depends, FastAPI, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from ..crud import songs
+from .. crud import songs
 
-from .. import models, schemas
-from ..database import SessionLocal, engine
-from ..dependencies import get_db
-from ..helpers import colour_helpers
+from .. import schemas
+from .. dependencies import get_db
+from .. helpers import colour_helpers
 
 router = APIRouter(prefix="/songs")
 

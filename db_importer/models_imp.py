@@ -1,8 +1,6 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Table, Float, JSON
-from sqlalchemy.orm import relationship, Mapped, mapped_column
-from typing import Optional
+from sqlalchemy import Column, Integer, String, JSON
+from sqlalchemy.orm import Mapped, mapped_column
 
-from typing import List
 
 from database_imp import CtrlBase, DbBase
 

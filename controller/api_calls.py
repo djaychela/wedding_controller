@@ -5,13 +5,12 @@ import copy
 from concurrent.futures import ThreadPoolExecutor
 from random import randint
 
-from rich import print
 
 from rich.console import Console
 
 from .crud import state, effects, songs
 
-from .helpers import colour_helpers, api_helpers, bands_helpers
+from .helpers import colour_helpers, api_helpers
 
 from .config import *
 

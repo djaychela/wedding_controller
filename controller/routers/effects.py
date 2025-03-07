@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from ..crud import effects
 
 from .. import schemas
-from ..database import SessionLocal, engine
-from ..dependencies import get_db
+from .. database import SessionLocal, engine
+from .. dependencies import get_db
 
 router = APIRouter(prefix="/effects")
 

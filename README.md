@@ -74,16 +74,11 @@ To get this up and running all on the same system, just change the IP addresses 
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
 ### Prerequisites
 
 Running install of LedFX, with lights setup as a virtual, and running in audio-reactive mode.  
 
 ### Installation
-
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
 
 1. Create a Python 3.10 virtual environment (later versions may work, but this was built with Python 3.10)
    ```sh

@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 
 from pathlib import Path
 
-from ..crud import state
-from ..dependencies import get_db
+from .. crud import state
+from .. dependencies import get_db
 from .. import api_calls
 
 router = APIRouter(prefix="")

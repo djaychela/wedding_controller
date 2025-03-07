@@ -1,6 +1,4 @@
-from sqlalchemy import update
 from sqlalchemy.orm import Session
-from sqlalchemy.sql import func
 
 from . import models, schemas
 

@@ -1,11 +1,10 @@
 import colorsys
 import math
-import json
 import re
 
 from rich.console import Console
 
-from random import randint, choice, shuffle, uniform
+from random import choice, shuffle, uniform
 
 from ..crud import dancefloor, state, songs
 

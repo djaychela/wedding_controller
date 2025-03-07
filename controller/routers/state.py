@@ -1,12 +1,10 @@
-from fastapi import APIRouter, Depends, FastAPI, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 
-from .. import models, schemas
-from ..database import SessionLocal, engine
-from ..dependencies import get_db
-from ..crud import state, dancefloor, effects, songs #import get_state, update_ledfx_state
-from .. import api_calls
-# from ..api_calls import api_for_new_song
+from .. import schemas, api_calls
+from .. dependencies import get_db
+from .. crud import state, dancefloor
+
 
 router = APIRouter(prefix="/state",)
 

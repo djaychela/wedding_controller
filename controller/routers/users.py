@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request, Form
+from fastapi import APIRouter, Depends, HTTPException, Request, Form
 from fastapi.templating import Jinja2Templates
 
 from sqlalchemy.orm import Session
@@ -6,11 +6,10 @@ from typing import Annotated
 
 from pathlib import Path
 
-from ..crud import crud
+from .. crud import crud
 
-from .. import models, schemas
-from ..database import SessionLocal, engine
-from ..dependencies import get_db
+from .. import schemas
+from .. dependencies import get_db
 
 router = APIRouter(prefix="/users",)
 
