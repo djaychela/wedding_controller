@@ -36,7 +36,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
 
 @router.get("/register_nfc/")
 def register_nfc_get(request: Request, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    print(f"{BASE_PATH=}")
+    # print(f"{BASE_PATH=}")
     users = crud.get_users(db, skip=skip, limit=limit)
     user_list = []
     for user in users:

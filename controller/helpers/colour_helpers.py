@@ -9,13 +9,21 @@ from random import randint, choice, shuffle, uniform
 
 from ..crud import dancefloor, state, songs
 
-console = Console()
+from ..config import *
+
+from ..common import output_to_console
+
+if CONSOLE_OUTPUT:
+    console = Console()
+else:
+    console = None
+
 
 def generate_random_hex_colour() -> str:
     # returns a 6-digit hex colour in the format #AABBCC
     candidates = ["#ff0000", "#00ff00", "#0000ff", "#fa9d00", "#ffff00", "#9370db", "#808080", "#00ffff", "#ff00ff"]	
     colour = choice(candidates)
-    console.print(f"Random Colour: {colour}")
+    output_to_console("print", f"Random Colour: {colour}", console)
     return colour
 
 def choose_random_colour(colour_list):
@@ -106,13 +114,13 @@ def create_colourscheme(db) -> list:
     song voters (first, but randomised in order)
     dancefloor members (in reverse order, newest first)
     returns a list of #AABBCC format colours """
-    console.print("[bright_cyan]colour_helpers[/].[bold]create_colourscheme[/]")
+    output_to_console("print", "[bright_cyan]colour_helpers[/].[bold]create_colourscheme[/]", console)
     current_state = state.get_state(db)
     voter_colours = songs.get_song_colours(db, current_state.current_song_id, mode="list")
     if voter_colours == None:
         voter_colours = []
     shuffle(voter_colours)
-    console.print(f"{voter_colours=}")
+    output_to_console("print", f"{voter_colours=}", console)
     dancefloor_colours = dancefloor.get_dancefloor_colours(db, list_mode=True)
     # remove any duplication
     dancefloor_colours = [colour for colour in dancefloor_colours if colour not in voter_colours]
@@ -121,15 +129,15 @@ def create_colourscheme(db) -> list:
         # No votes, no-one on the dancefloor, so return a single random colour
         current_colours = [generate_random_hex_colour()]
     state.update_state_colours(db, current_colours)
-    console.print(f"{current_colours=}")
+    output_to_console("print", f"{current_colours=}", console)
     return current_colours
 
 
 def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> list:
     # Takes a list of colours and a mode from an effect
     # returns an appropriately-altered gradient
-    console.print("[bright_cyan]colour_helpers[/].[bold]refine_colourscheme[/]")
-    console.print(f"{colour_list=}, {colour_mode=}, {mode=}")
+    output_to_console("print", "[bright_cyan]colour_helpers[/].[bold]refine_colourscheme[/]", console)
+    output_to_console("print", f"{colour_list=}, {colour_mode=}, {mode=}", console)
     colour_list = list(set(colour_list))
     if colour_mode == "gradient":
         # limit to current length in settings - same for both modes
@@ -155,7 +163,7 @@ def refine_colourscheme(db, colour_list: list, colour_mode: str, mode: str) -> l
         else:
             colourscheme = dancefloor.get_last_n_dancers(db, True, 1)
         
-    console.print(f"Returning {colourscheme=}")
+    output_to_console("print", f"Returning {colourscheme=}", console)
     return colourscheme
             
 def extract_gradient(gradient_string):

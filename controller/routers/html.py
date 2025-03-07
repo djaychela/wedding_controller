@@ -31,5 +31,5 @@ async def change_effect(request: Request, db: Session = Depends(get_db)):
     current_state = state.get_state(db)
     api_response = api_calls.new_random_effect(db, current_state.current_song_id)
     data = api_response['name']
-    current_state = state.get_state(db)
+    current_state = state.get_state(db) 
     return templates.TemplateResponse("updated.html", {"request": request, "type": "Effect", 'data': data})

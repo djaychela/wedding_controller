@@ -13,25 +13,22 @@ from .crud import state, effects, songs
 
 from .helpers import colour_helpers, api_helpers, bands_helpers
 
-SPECIAL_SONGS = ["2NVpYQqdraEcQwqT7GhUkh", "6LNdC4inw5abVNMQ1YUHN6", "63xdwScd1Ai1GigAwQxE8y"]
+from .config import *
 
-WRISTBANDS_DISABLED = ["2NVpYQqdraEcQwqT7GhUkh"]
+from .common import output_to_console
 
-STICKS = True
-STICKS_2 = False
-BANDS = False
-
-STANDALONE = True # True when not running with song database and changes
-
-console = Console()
+if CONSOLE_OUTPUT:
+    console = Console()
+else:
+    console = None
 
 def dancefloor_entry_exit(db):
     current_state = state.get_state(db)
     if current_state.current_song_id in WRISTBANDS_DISABLED:
         # wristband colour changes disabled for the first song!
-        console.rule(f"[bold green]:no_entry: Wristbands Disabled! :no_entry:[/]\n")
+        output_to_console("rule", f"[bold green]:no_entry: Wristbands Disabled! :no_entry:[/]\n", console)
         return
-    console.rule(f"[bold green]:light_bulb: Dancefloor Entry/Exit :light_bulb:[/]\n")
+    output_to_console("rule", f"[bold green]:light_bulb: Dancefloor Entry/Exit :light_bulb:[/]\n", console)
     colourscheme = colour_helpers.create_colourscheme(db)
     current_state = state.get_state(db)
 
@@ -43,9 +40,9 @@ def dancefloor_entry_exit(db):
     bands_current_song(db, timing="instant")
 
 def bands_current_song(db, timing = "instant"):
-    console.rule(f"[bold green]:light_bulb: Sending to Bands :light_bulb:[/]\n")
+    output_to_console("rule", f"[bold green]:light_bulb: Sending to Bands :light_bulb:[/]\n", console)
     if timing == "delayed":
-        console.rule(f"[bold green]:clock10: Delay... :clock10:[/]\n")
+        output_to_console("rule", f"[bold green]:clock10: Delay... :clock10:[/]\n", console)
         time.sleep(10)
     current_state = state.get_state(db)
     colourscheme = json.loads(current_state.colours)
@@ -56,7 +53,7 @@ def bands_current_song(db, timing = "instant"):
 
 def flash_bands(db, song_id=None):
     """Looks up voters for current song"""
-    console.rule(f"[bold green]:light_bulb: Flashing Bands :light_bulb:[/]\n")
+    output_to_console("rule", f"[bold green]:light_bulb: Flashing Bands :light_bulb:[/]\n", console)
     song_colours = songs.get_song_colours(db, song_id, mode="list", strict=True)
     if len(song_colours) == 0:
         # No-one voted, so set the bands for the song
@@ -68,7 +65,7 @@ def flash_bands(db, song_id=None):
 
 def bands_slow_songs(db, song_id=None):
     """Slower bands for first three songs.  Colours from state (from preset)"""
-    console.rule(f"[bold green]:light_bulb: Bands for Slow Songs :light_bulb:[/]\n")
+    output_to_console("rule", f"[bold green]:light_bulb: Bands for Slow Songs :light_bulb:[/]\n", console)
     current_state = state.get_state(db)
     colourscheme = json.loads(current_state.colours)
     bands_slow = f"bands_slow_{SPECIAL_SONGS.index(song_id)}"
@@ -89,12 +86,12 @@ def wrist_bands_new_song(db, song_id):
 def api_for_new_song(db, song_id=None):
     # look up to see if preset exists for song.
     preset_effect = effects.get_effect_preset_by_song_id(db, song_id)
-    console.rule(f"[cyan]{songs.get_song_artist_title(db, song_id)}[/]")
+    output_to_console("rule", f"[cyan]{songs.get_song_artist_title(db, song_id)}[/]", console)
     if preset_effect:
         # preset present, select output effect, colour type and max colours
-        console.rule(f"[bold green]:light_bulb: Loading Preset! :light_bulb:[/]\n")
+        output_to_console("rule", f"[bold green]:light_bulb: Loading Preset! :light_bulb:[/]\n", console)
         api_request_1 = preset_effect.config['effect']
-        # console.print(f"{api_request_1=}")
+        # output_to_console("print", f"{api_request_1=}", console)
         colour_mode = preset_effect.colour_mode
         max_colours = preset_effect.max_colours
         # find matching effect to set id for updates
@@ -110,11 +107,11 @@ def api_for_new_song(db, song_id=None):
         api_request_2['config']['gradient_repeat'] = 2
     else:
         # Song does not have a preset, create random effect with voter colours
-        console.rule(f"[bold green]:shuffle_tracks_button: Creating Effect :shuffle_tracks_button:[/]\n")
+        output_to_console("rule",f"[bold green]:shuffle_tracks_button: Creating Effect :shuffle_tracks_button:[/]\n", console)
         num_votes = songs.get_song_votes(db, song_id)
         random_effect = effects.get_random_effect(db, num_votes)
         state.update_effect_id(db, random_effect.id)
-        console.print(f"Effect Chosen: {random_effect.type}")
+        output_to_console("print", f"Effect Chosen: {random_effect.type}", console)
         colours = colour_helpers.create_colourscheme(db)
         colour_mode = random_effect.colour_mode
         max_colours = random_effect.max_colours        
@@ -134,7 +131,7 @@ def api_for_new_song(db, song_id=None):
     return api_request_1
 
 def new_random_effect(db, song_id=None):
-    console.rule(f"[bold green]:light_bulb: New Random Effect :light_bulb:[/]\n")
+    output_to_console("rule", f"[bold green]:light_bulb: New Random Effect :light_bulb:[/]\n", console)
     if not STANDALONE:
         num_votes = songs.get_song_votes(db, song_id)
     else:
@@ -142,7 +139,7 @@ def new_random_effect(db, song_id=None):
         num_votes = 6
     random_effect = effects.get_random_effect(db, num_votes)
     state.update_effect_id(db, random_effect.id)
-    console.print(f"Effect Chosen: {random_effect.type}")
+    output_to_console("print", f"Effect Chosen: {random_effect.type}", console)
     if not STANDALONE:
         colours = colour_helpers.create_colourscheme(db)
         colour_mode = random_effect.colour_mode
@@ -167,7 +164,7 @@ def new_random_effect(db, song_id=None):
 
 
 def new_random_colour(db, song_id=None):
-    console.rule(f"[bold green]:light_bulb: New Random Colour :light_bulb:[/]\n")
+    output_to_console("rule", f"[bold green]:light_bulb: New Random Colour :light_bulb:[/]\n", console)
     current_state = state.get_state(db)
     colour_mode = current_state.ledfx_colour_mode
     max_colours = current_state.ledfx_max_colours
@@ -189,7 +186,7 @@ def new_random_colour(db, song_id=None):
     return api_request_1
 
 def new_random_colour_standalone(db, song_id=None):
-    console.rule(f"[bold green]:light_bulb: New Random Colour :light_bulb:[/]\n")
+    output_to_console("rule", f"[bold green]:light_bulb: New Random Colour :light_bulb:[/]\n", console)
     current_state = state.get_state(db)
     colour_mode = current_state.ledfx_colour_mode
     max_colours = current_state.ledfx_max_colours

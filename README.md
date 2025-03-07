@@ -99,11 +99,11 @@ _Below is an example of how you can instruct your audience on installing and set
    ```sh
    python -m pip install -r requirements.txt
    ```
-4. Change the `API_BASE_URL` constant appropriately in `controller/helpers/api_helpers.py`  - for instance for a setup with LedFX running on the same machine as the wedding controller (the default), but if you have it on another machine then this would need to change, such as here (for the original setup where it was on another machine with the IP address seen)
+4. Change the `API_BASE_URL` constant appropriately in `config.py`  - for instance for a setup with LedFX running on the same machine as the wedding controller (the default), but if you have it on another machine then this would need to change, such as here (for the original setup where it was on another machine with the IP address seen)
    ```python
    API_BASE_URL = "http://192.168.1.51:8888"
    ```
-5. Set the `STICKS`, `STICKS_2` and `BANDS` constants in `controller/helpers/api_calls.py` to suit your setup (see below for more on this):
+5. Set the `STICKS`, `STICKS_2` and `BANDS` constants in `config.py` to suit your setup (see below for more on this):
    ```python
    STICKS = True
    STICKS_2 = False
@@ -128,13 +128,13 @@ _Below is an example of how you can instruct your audience on installing and set
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-To set this up locally, ensure that `API_BASE_URL` is set to point at `127.0.0.1:8888`, and set up a virtual in LedFX, called virtual-1.  
+To set this up locally, ensure that `API_BASE_URL` in `config.py` is set to point at `127.0.0.1:8888`, and set up a virtual in LedFX, called virtual-1.  
 
-You will need to disable the calls to the other virtual and also to the 'bands' - these were radio-controlled wristbands whose colour could be set via an API call to an ESP8266 which converted the call to DMX to control the bands.  This is done by setting the constants at the top of `api_calls.py` - `STICKS`, `STICKS_2` and `BANDS` - which are tested before making the API calls.  For my own home setup, `STICKS_2` (which were two battery powered lights) and `BANDS` (the DMX-radio-controlled wristbands) are disabled by setting them to False.  Failing to disable these when they are not present will mean FastAPI will eventually throw an error when the API call is unanswered.
+You will need to disable the calls to the other virtual and also to the 'bands' - these were radio-controlled wristbands whose colour could be set via an API call to an ESP8266 which converted the call to DMX to control the bands.  This is done by setting the constants in `config.py` - `STICKS`, `STICKS_2` and `BANDS` - which are tested before making the API calls.  For my own home setup, `STICKS_2` (which were two battery powered lights) and `BANDS` (the DMX-radio-controlled wristbands) are disabled by setting them to False.  Failing to disable these when they are not present will mean FastAPI will eventually throw an error when the API call is unanswered.
 
 System can be [seen running here](https://photos.app.goo.gl/MPWkFfHzNgioq3M98)
 
-There's a fair bit of output to the console as the system runs.  This was for bug-hunting initially but I left it in place as the system needed to work out-of-the-box on my wedding day and having the reassurance of seeing this output on the morning was very relaxing!
+There's a fair bit of output to the console as the system runs.  This was for bug-hunting initially but I left it in place as the system needed to work out-of-the-box on my wedding day and having the reassurance of seeing this output on the morning was very relaxing!  This can be disabled by setting `CONSOLE_OUTPUT` to `False` in `config.py`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

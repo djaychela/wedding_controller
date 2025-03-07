@@ -56,7 +56,7 @@ def save_users(users_list):
 
             session.commit()
 
-            print(f"Added {current_user}")
+            # print(f"Added {current_user}")
 
 
 def load_tracks():
@@ -84,7 +84,7 @@ def save_tracks(tracks_list):
             current_song.duration = track["duration"]
             session.add(current_song)
             session.commit()
-            print(f"Added {current_song} -> {current_song.title}")
+            # print(f"Added {current_song} -> {current_song.title}")
 
 
 def load_votes():
@@ -105,7 +105,7 @@ def save_votes(votes_list):
             current_vote.voter_id = vote["voter_id"]
             session.add(current_vote)
             session.commit()
-            print(f"Added {current_vote}")
+            # print(f"Added {current_vote}")
 
 
 def create_state():

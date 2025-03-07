@@ -5,7 +5,7 @@ from .. import models, schemas
 
 from . import state
 
-NEVER_CHOOSE_EFFECTS_TYPE = ["gradient"]
+from ..config import *
 
 def create_effect(db: Session, effect: schemas.EffectPresetCreate):
     db_effect = models.EffectPreset(**effect.dict())
@@ -26,10 +26,10 @@ def get_effect_by_id(db: Session, effect_id: int):
 def get_random_effect(db: Session, max_colours):
     current_state = state.get_state(db)
     current_effect_id = current_state.effect_id
-    print(f"{max_colours=}")
+    # print(f"{max_colours=}")
     random_effect = db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).filter(models.Effect.id != current_effect_id).order_by(func.random()).first()
-    print(f"**** {random_effect} ****")
-    print(random_effect.type)
+    # print(f"**** {random_effect} ****")
+    # print(random_effect.type)
     while random_effect.type in NEVER_CHOOSE_EFFECTS_TYPE:
         random_effect = db.query(models.Effect).filter(models.Effect.max_colours >= max_colours).filter(models.Effect.id != current_effect_id).order_by(func.random()).first()
     return random_effect

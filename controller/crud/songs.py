@@ -21,8 +21,8 @@ def get_song_artist_title(db: Session, song_id: str):
 
 
 def get_song_colours(db: Session, song_id: str, mode="dict", strict=False):
-    print("songs.get_song_colours...")
-    print(f"{song_id=}, {mode=}, {strict=}")
+    # print("songs.get_song_colours...")
+    # print(f"{song_id=}, {mode=}, {strict=}")
     voters = db.query(models.Votes).filter(models.Votes.track_id == song_id).all()
     if voters:
         colours = {}
@@ -37,7 +37,7 @@ def get_song_colours(db: Session, song_id: str, mode="dict", strict=False):
         if strict:
             return []
         else:
-            print("returning a random colour")
+            # print("returning a random colour")
             return [colour_helpers.generate_random_hex_colour()]
 
 def get_song_votes(db: Session, song_id: str):

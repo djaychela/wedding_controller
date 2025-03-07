@@ -11,16 +11,14 @@ from ..models import EffectPreset, State
 
 from . import colour_helpers
 
-API_BASE_URL = "http://192.168.1.238:8888"
+from ..config import *
 
-STICKS_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/virtual-1/effects"
-STICKS_2_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/virtual-2/effects"
-BANDS_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/wled-bands/effects"
-DMX_API_ENDPOINT = f"{API_BASE_URL}/api/virtuals/virtual-dmx/effects"
-WLED_BANDS_API_ENDPOINT = "http://192.168.1.33/json"
-MODE = "run"
+from ..common import output_to_console
 
-console = Console()
+if CONSOLE_OUTPUT:
+    console = Console()
+else:
+    console = None
 
 def update_state_from_response(db, response, mode):
     response_dict = response.json()    
@@ -43,25 +41,25 @@ def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_
     gradient = colour_helpers.create_gradient(colourscheme, flash=flash)
 
     if effect_id is not None:
-        # console.print(f"Effect ID: {effect_id}")
-        # console.print(f"Colourscheme: {colourscheme}")
+        # output_to_console("print", f"Effect ID: {effect_id}", console)
+        # output_to_console("print", f"Colourscheme: {colourscheme}", console)
         effect_config = copy.deepcopy(effects.get_effect_string_by_id(db, effect_id))
-        # console.print(f"{id(effect_config)=}")
-        # console.print(f"Effect Config: {effect_config}")
+        # output_to_console("print", f"{id(effect_config)=}", console)
+        # output_to_console("print", f"Effect Config: {effect_config}", console)
         index = list(effect_config['config'].values())
         gradient_indices = [i for i, x in enumerate(index) if x == "#GGGGGG"]
         other_indices = [i for i, x in enumerate(index) if x == "#HHHHHH"]
-        # console.print(f"Gradient Indices: {gradient_indices}")
-        # console.print(f"Other Indices:    {other_indices}")
+        # output_to_console("print", f"Gradient Indices: {gradient_indices}", console)
+        # output_to_console("print", f"Other Indices:    {other_indices}", console)
         if gradient_indices:
-            # console.print(f"Keys: {[list(effect_config['config'].keys())[g] for g in gradient_indices]}")
+            # output_to_console("print", f"Keys: {[list(effect_config['config'].keys())[g] for g in gradient_indices]}", console)
             for key in [list(effect_config['config'].keys())[g] for g in gradient_indices]:
-                # console.print(f"Replacing {key}")
+                # output_to_console("print", f"Replacing {key}", console)
                 effect_config['config'][key] = gradient
         if other_indices:
-            # console.print(f"Keys: {[list(effect_config['config'].keys())[o] for o in other_indices]}")
+            # output_to_console("print", f"Keys: {[list(effect_config['config'].keys())[o] for o in other_indices]}", console)
             for idx, key in enumerate([list(effect_config['config'].keys())[o] for o in other_indices]):
-                # console.print(f"Replacing {key}")
+                # output_to_console("print", f"Replacing {key}", console)
                 try:
                     effect_config['config'][key] = colourscheme[idx]
                 except IndexError:
@@ -69,7 +67,7 @@ def create_api_request_string(db, fx_type, colourscheme, effect_id=None, sticks_
         if sticks_2:
             effect_config['config']['band_count'] = 2
             effect_config['config']['gradient_repeat'] = 2
-        # console.print(f"Final Effect Config: {effect_config}")
+        # output_to_console("print", f"Final Effect Config: {effect_config}", console)
 
         return effect_config
 
@@ -124,20 +122,20 @@ def perform_api_call(db, data, mode="sticks"):
         endpoint = DMX_API_ENDPOINT
     
     if MODE == "test":
-        console.rule(f"[bold red]:test_tube: Test Mode Active :test_tube:[/]\n")
-        console.print(f"API Data sent to :{endpoint}")
-        console.print(f"{data=}")
+        output_to_console("rule", f"[bold red]:test_tube: Test Mode Active :test_tube:[/]\n", console)
+        output_to_console("print", f"API Data sent to :{endpoint}", console)
+        output_to_console("print", f"{data=}", console)
 
         # TODO: update state from data
     else:
-        console.rule(f"[bold green]:chequered_flag: API Call - {mode} :chequered_flag:[/]\n")
+        output_to_console("rule", f"[bold green]:chequered_flag: API Call - {mode} :chequered_flag:[/]\n", console)
         data_dump = json.dumps(data)
         # sending post request and saving response as response object
         r = requests.post(url=endpoint, data=data_dump)
         if r.status_code == 200:
-            console.rule(f"[bold green]:thumbs_up: 200 :thumbs_up:[/]\n")
+            output_to_console("rule", f"[bold green]:thumbs_up: 200 :thumbs_up:[/]\n", console)
             if mode != "sticks_2":
                 update_state_from_response(db, r, mode)
         else:
-            console.rule(f"[bold green]:no_entry_sign::thumbs_down: {r.status_code} :thumbs_down::no_entry_sign:[/]\n")
+            output_to_console("rule", f"[bold green]:no_entry_sign::thumbs_down: {r.status_code} :thumbs_down::no_entry_sign:[/]\n", console)
     
